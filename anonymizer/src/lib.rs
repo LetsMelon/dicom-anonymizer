@@ -4,8 +4,7 @@ mod macros;
 #[macro_use]
 extern crate derive_builder;
 use std::error::Error;
-use dicom_core::{DataElement, dicom_value, VR};
-use dicom_core::value::DicomDateTime;
+use dicom_core::{DataElement, dicom_value, VR, value::DicomDateTime};
 use dicom_dictionary_std::tags;
 use dicom_object::{DefaultDicomObject, open_file};
 
