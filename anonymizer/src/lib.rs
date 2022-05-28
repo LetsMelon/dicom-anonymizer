@@ -7,6 +7,7 @@ use std::error::Error;
 use dicom_core::{DataElement, dicom_value, VR, value::DicomDateTime};
 use dicom_dictionary_std::tags;
 use dicom_object::{DefaultDicomObject, open_file};
+use anyhow::{anyhow, Result};
 
 #[derive(Debug, Builder)]
 pub struct AnonymizerMeta {
@@ -32,14 +33,14 @@ pub struct Anonymizer {
 
 // Constructors
 impl Anonymizer {
-    fn new() -> Result<Anonymizer, Box<dyn Error>> {
+    fn new() -> Result<Self> {
         Ok(Self {
             file: Option::None,
             meta: AnonymizerMetaBuilder::default().build()?,
         })
     }
 
-    pub fn from_file(path: &str) -> Result<Self, Box<dyn Error>> {
+    pub fn from_file(path: &str) -> Result<Self> {
         let mut back = Self::new()?;
 
         back.file = Option::from({
@@ -55,7 +56,7 @@ impl Anonymizer {
         Ok(back)
     }
 
-    pub fn from_object(object: DefaultDicomObject) -> Result<Self, Box<dyn Error>> {
+    pub fn from_object(object: DefaultDicomObject) -> Result<Self> {
         let mut back = Self::new()?;
 
         back.file = Option::from(AnonymizerFile {
@@ -77,7 +78,7 @@ impl Anonymizer {
         self.meta = meta;
     }
 
-    pub fn save(&mut self, path: &str) -> Result<(), Box<dyn Error>> {
+    pub fn save(&mut self, path: &str) -> Result<()> {
         match &self.file {
             Some(file) => {
                 if file.updated_obj {
@@ -86,7 +87,7 @@ impl Anonymizer {
                 self.file.as_ref().unwrap().obj.write_to_file(path)?;
                 Ok(())
             },
-            None => panic!("Nothing to save"),
+            None => Err(anyhow!("Need to have a initialised DICOM object")),
         }
     }
 
