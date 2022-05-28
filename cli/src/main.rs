@@ -1,4 +1,5 @@
 use dicom_core::chrono::FixedOffset;
+use dicom_core::Tag;
 use dicom_core::value::{DicomDate, DicomDateTime};
 use anonymizer::{Anonymizer};
 
@@ -11,6 +12,14 @@ fn main() {
                 DicomDate::from_ymd(2022, 1, 1).unwrap(),
                 FixedOffset::east(0))
             )
+            .remove_tag(Tag {
+                0: 0x0010,
+                1: 0x0040,
+            })
+            .remove_tags(vec![Tag {
+                0: 0x0010,
+                1: 0x0020,
+            }])
             .build().unwrap()
     );
 

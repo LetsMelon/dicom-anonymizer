@@ -3,8 +3,7 @@ mod macros;
 
 #[macro_use]
 extern crate derive_builder;
-use std::error::Error;
-use dicom_core::{DataElement, dicom_value, VR, value::DicomDateTime};
+use dicom_core::{DataElement, dicom_value, VR, value::DicomDateTime, Tag};
 use dicom_dictionary_std::tags;
 use dicom_object::{DefaultDicomObject, open_file};
 use anyhow::{anyhow, Result};
@@ -15,7 +14,33 @@ pub struct AnonymizerMeta {
     patient_name: Option<String>,
 
     #[builder(setter(into, strip_option), default)]
-    patient_birth_date: Option<DicomDateTime>
+    patient_birth_date: Option<DicomDateTime>,
+
+    #[builder(setter(custom, into, strip_option), default)]
+    remove_tags: Vec<Tag>
+}
+
+impl AnonymizerMetaBuilder {
+    pub fn remove_tag(&mut self, value: Tag) -> &mut Self {
+        let mut obj = self;
+
+        if obj.remove_tags.is_none() {
+            obj.remove_tags = Some(Vec::<Tag>::new());
+        }
+        obj.remove_tags.as_mut().unwrap().push(value);
+
+        obj
+    }
+
+    pub fn remove_tags(&mut self, values: Vec<Tag>) -> &mut Self {
+        let obj = self;
+
+        for item in values {
+            obj.remove_tag(item);
+        }
+
+        obj
+    }
 }
 
 #[derive(Debug)]
@@ -109,5 +134,9 @@ impl Anonymizer {
                 dicom_value!(DateTime, *v),
             ));
         }));
+
+        for item in &self.meta.remove_tags {
+            self.file.as_mut().unwrap().obj.remove_element(*item);
+        }
     }
 }
