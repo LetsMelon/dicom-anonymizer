@@ -3,8 +3,9 @@ use derive_more::{Display};
 use dicom_core::Tag;
 use tags_list_lib::List as TagsList;
 use strum::EnumCount;
+use serde::{Serialize, Deserialize};
 
-#[derive(Display, Clone, Debug, EnumCount)]
+#[derive(Display, Copy, Clone, Debug, EnumCount, Serialize, Deserialize)]
 pub enum PatientSex {
     M,
     F,
