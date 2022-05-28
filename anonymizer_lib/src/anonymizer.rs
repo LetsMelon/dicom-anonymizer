@@ -7,7 +7,7 @@ use crate::file::AnonymizerFile;
 use crate::meta::{AnonymizerMeta, AnonymizerMetaBuilder};
 use crate::enums::PatientSex;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Anonymizer {
     file: Option<AnonymizerFile>,
     meta: AnonymizerMeta,
@@ -15,7 +15,7 @@ pub struct Anonymizer {
 
 // Constructors
 impl Anonymizer {
-    fn new() -> Result<Self> {
+    pub fn new() -> Result<Self> {
         Ok(Self {
             file: Option::None,
             meta: AnonymizerMetaBuilder::default().build()?,
