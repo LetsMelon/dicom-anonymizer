@@ -3,7 +3,6 @@ use dicom_dictionary_std::tags;
 use dicom_object::{DefaultDicomObject, open_file};
 use anyhow::{anyhow, Result};
 
-use crate::CustomDicomDateTime;
 use crate::file::AnonymizerFile;
 use crate::meta::{AnonymizerMeta, AnonymizerMetaBuilder};
 use crate::enums::PatientSex;
