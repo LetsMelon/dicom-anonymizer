@@ -5,7 +5,7 @@ use anyhow::{anyhow, Result};
 
 use crate::file::AnonymizerFile;
 use crate::meta::{AnonymizerMeta, AnonymizerMetaBuilder};
-use crate::PatientSex;
+use crate::enums::PatientSex;
 
 #[derive(Debug)]
 pub struct Anonymizer {
