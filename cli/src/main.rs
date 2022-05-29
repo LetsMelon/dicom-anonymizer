@@ -28,6 +28,9 @@ struct Cli {
 
     #[clap(short, long, multiple_values = true, value_delimiter = ',')]
     remove_tags: Vec<String>,
+
+    #[clap(long)]
+    dry_run: bool,
 }
 
 fn main() -> Result<()> {
@@ -77,9 +80,11 @@ fn main() -> Result<()> {
 
     obj.meta(builder.build()?);
 
-    obj.anonymize();
+    if !args.dry_run {
+        obj.anonymize();
 
-    obj.save(&args.output.to_string_lossy())?;
+        obj.save(&args.output.to_string_lossy())?;
+    }
 
     Ok(())
 }
