@@ -4,6 +4,7 @@ use dicom_core::value::DicomDateTime;
 use crate::enums::{PatientSex, RemoveTagsInput};
 
 #[derive(Debug, Builder)]
+#[builder(derive(Debug))]
 pub struct AnonymizerMeta {
     #[builder(setter(into, strip_option), default)]
     pub(crate) patient_name: Option<String>,

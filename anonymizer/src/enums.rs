@@ -1,12 +1,28 @@
+use std::str::FromStr;
 use derive_more::{Display};
 use dicom_core::Tag;
 use tags_list::List as TagsList;
+use strum::EnumCount;
 
-#[derive(Display, Clone, Debug)]
+#[derive(Display, Clone, Debug, EnumCount)]
 pub enum PatientSex {
     M,
     F,
     O,
+}
+
+impl FromStr for PatientSex {
+    type Err = ::strum::ParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        assert!(PatientSex::COUNT == 3, "TODO: implement new patient sex value");
+        match s.to_ascii_lowercase().as_str() {
+            "m" => Ok(PatientSex::M),
+            "f" => Ok(PatientSex::F),
+            "o" => Ok(PatientSex::O),
+            _ => Err(::strum::ParseError::VariantNotFound)
+        }
+    }
 }
 
 impl PatientSex {
