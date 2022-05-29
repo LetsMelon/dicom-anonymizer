@@ -25,15 +25,12 @@ impl Anonymizer {
     pub fn from_file(path: &str) -> Result<Self> {
         let mut back = Self::new()?;
 
-        back.file = Option::from({
-            let file = AnonymizerFile {
-                path: path.clone().to_owned(),
+        back.file = Option::from(
+            AnonymizerFile {
                 obj: open_file(path)?,
                 updated_obj: false,
-            };
-
-            file
-        });
+            }
+        );
 
         Ok(back)
     }
@@ -42,7 +39,6 @@ impl Anonymizer {
         let mut back = Self::new()?;
 
         back.file = Option::from(AnonymizerFile {
-            path: "".to_string(),
             obj: object,
             updated_obj: false,
         });

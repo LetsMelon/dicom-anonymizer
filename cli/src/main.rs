@@ -67,7 +67,7 @@ fn main() -> Result<()> {
 
     let mut remove_tags = Vec::<Tag>::new();
     for item in args.remove_tags {
-        let splitted = item.split("-").collect::<Vec<&str>>();
+        let splitted = item.split('-').collect::<Vec<&str>>();
 
         let group_number = u16::from_str_radix( splitted[0].trim_start_matches("0x"), 16)?;
         let element_number = u16::from_str_radix( splitted[1].trim_start_matches("0x"), 16)?;
