@@ -5,6 +5,7 @@ use anyhow::{anyhow, Result};
 
 use crate::file::AnonymizerFile;
 use crate::meta::{AnonymizerMeta, AnonymizerMetaBuilder};
+use crate::PatientSex;
 
 #[derive(Debug)]
 pub struct Anonymizer {
@@ -95,5 +96,13 @@ impl Anonymizer {
         for item in &self.meta.remove_tags {
             self.file.as_mut().unwrap().obj.remove_element(*item);
         }
+
+        match_field!(&self.meta.patient_sex, (|v: &PatientSex| {
+            self.file.as_mut().unwrap().obj.put(DataElement::new(
+                tags::PATIENT_SEX,
+                VR::CS,
+                dicom_value!(Str, v.value()),
+            ));
+        }));
     }
 }

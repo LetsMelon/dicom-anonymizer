@@ -1,5 +1,27 @@
 use dicom_core::Tag;
 use dicom_core::value::DicomDateTime;
+use derive_more::{Display};
+
+#[derive(Display, Clone, Debug)]
+pub enum PatientSex {
+    M,
+    F,
+    O,
+}
+
+impl PatientSex {
+    pub fn value(&self) -> &str {
+        match *self {
+            PatientSex::M => "M",
+            PatientSex::F => "F",
+            PatientSex::O => "O",
+        }
+    }
+}
+
+impl Default for PatientSex {
+    fn default() -> Self { PatientSex::M }
+}
 
 #[derive(Debug, Builder)]
 pub struct AnonymizerMeta {
@@ -10,7 +32,10 @@ pub struct AnonymizerMeta {
     pub(crate) patient_birth_date: Option<DicomDateTime>,
 
     #[builder(setter(custom, into, strip_option), default)]
-    pub(crate) remove_tags: Vec<Tag>
+    pub(crate) remove_tags: Vec<Tag>,
+
+    #[builder(setter(into, strip_option), default)]
+    pub(crate) patient_sex: Option<PatientSex>,
 }
 
 impl AnonymizerMetaBuilder {
