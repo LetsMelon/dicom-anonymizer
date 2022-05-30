@@ -1,3 +1,4 @@
+use std::path::Path;
 use std::str::FromStr;
 use anonymizer_lib::PatientSex;
 use crate::utils::{is_dcm_path, parse_date};
@@ -9,6 +10,13 @@ pub fn validator_is_dcm_path(path: &str) -> ValidatorType {
         return Ok(())
     }
     Err(String::from("Must be a valid dicom file path"))
+}
+
+pub fn validator_is_file_path(path: &str) -> ValidatorType {
+    if Path::new(path).exists() {
+        return Ok(())
+    }
+    Err(String::from("Must be a valid file path"))
 }
 
 pub fn validator_is_date(value: &str) -> ValidatorType {

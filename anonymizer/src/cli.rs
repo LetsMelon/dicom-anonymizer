@@ -7,7 +7,7 @@ use dicom_core::Tag;
 use dicom_core::value::DicomDateTime;
 use anonymizer_lib::PatientSex;
 
-use crate::validator::{validator_is_date, validator_is_dcm_path, validator_is_sex};
+use crate::validator::{validator_is_date, validator_is_dcm_path, validator_is_file_path, validator_is_sex};
 
 type Path = std::path::PathBuf;
 
@@ -58,7 +58,19 @@ impl App {
                     .value_name("FILE")
                     .required(true)
                     .help("DICOM file to anonymize")
-                    .validator(validator_is_dcm_path),
+                    .validator(|v| -> Result<(), String> {
+                        let v1 = validator_is_dcm_path(v);
+                        let v2 = validator_is_file_path(v);
+
+                        match (v1, v2) {
+                            (Ok(_), Ok(_)) => Ok(()),
+                            (Err(s), Ok(_)) => Err(s),
+                            (Ok(_), Err(s)) => Err(s),
+                            (Err(s1), Err(s2)) => {
+                                Err(format!("{0}, {1}", s1, s2))
+                            }
+                        }
+                    }),
                 Arg::new("output")
                     .takes_value(true)
                     .short('o')
