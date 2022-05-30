@@ -7,6 +7,11 @@ use anyhow::Result;
 use clap::Parser;
 use std::str::FromStr;
 use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
+use crate::cli::App;
+
+mod cli;
+mod utils;
+mod validator;
 
 #[derive(Parser, Debug)]
 #[clap(author="Domenic Melcher", version, about, long_about = None)]
@@ -33,7 +38,13 @@ struct Cli {
     dry_run: bool,
 }
 
-fn main() -> Result<()> {
+fn main() {
+    let app = App::new();
+
+    println!("{:?}", app);
+}
+
+fn test() -> Result<()> {
     let args: Cli = Cli::parse();
 
     // println!("{:?}", args);
