@@ -13,88 +13,51 @@ mod cli;
 mod utils;
 mod validator;
 
-#[derive(Parser, Debug)]
-#[clap(author="Domenic Melcher", version, about, long_about = None)]
-struct Cli {
-    #[clap(short, long, parse(from_os_str))]
-    input: std::path::PathBuf,
-
-    #[clap(short, long, parse(from_os_str))]
-    output: std::path::PathBuf,
-
-    #[clap(short, long, multiple_values = true)]
-    patient_name: Option<Vec<String>>,
-
-    #[clap(long)]
-    patient_sex: Option<String>,
-
-    #[clap(long)]
-    patient_birth_date: Option<String>,
-
-    #[clap(short, long, multiple_values = true, value_delimiter = ',')]
-    remove_tags: Vec<String>,
-
-    #[clap(long)]
-    dry_run: bool,
-}
-
-fn main() {
+fn main() -> Result<()> {
     let app = App::new();
 
-    println!("{:?}", app);
-}
-
-fn test() -> Result<()> {
-    let args: Cli = Cli::parse();
-
-    // println!("{:?}", args);
-
-    let mut obj = Anonymizer::from_file(&args.input.to_string_lossy())?;
+    let mut obj = Anonymizer::from_file(&app.input.to_string_lossy())?;
     let mut builder = Anonymizer::meta_builder();
 
-    match args.patient_name {
+    match &app.patient_name {
         Some(v) => {
-            builder.patient_name(v.join(" "));
+            builder.patient_name(v);
         }
         None => (),
     }
 
-    match args.patient_sex {
+    match &app.patient_sex {
         Some(ps) => {
-            builder.patient_sex(PatientSex::from_str(&ps)?);
+            builder.patient_sex(ps.to_owned());
         },
         None => (),
     };
 
-    match args.patient_birth_date {
+    match &app.patient_birth_day {
         Some(pbd) => {
-            let ndt = NaiveDate::parse_from_str(&*pbd, "%Y-%m-%d")?
-                .and_time(NaiveTime::from_hms(0, 0,0));
-            let dt_offset: DateTime<FixedOffset> = DateTime::<Utc>::from_utc(ndt, Utc).into();
-            builder.patient_birth_date(DicomDateTime::try_from(&dt_offset)?);
+            builder.patient_birth_date(pbd.to_owned());
         },
         None => (),
     };
 
-    let mut remove_tags = Vec::<Tag>::new();
-    for item in args.remove_tags {
-        let splitted = item.split('-').collect::<Vec<&str>>();
-
-        let group_number = u16::from_str_radix( splitted[0].trim_start_matches("0x"), 16)?;
-        let element_number = u16::from_str_radix( splitted[1].trim_start_matches("0x"), 16)?;
-        remove_tags.push(Tag {
-            0: group_number,
-            1: element_number,
-        });
-    }
-    builder.remove_tags(remove_tags.into());
+    match &app.remove_tags {
+        Some(tags) => {
+            builder.remove_tags(tags.to_owned().into());
+        },
+        None => (),
+    };
 
     obj.meta(builder.build()?);
 
-    if !args.dry_run {
-        obj.anonymize();
+    obj.anonymize();
 
-        obj.save(&args.output.to_string_lossy())?;
+    match (app.output, app.dry_run) {
+        (_, true) => (),
+        (None, false) => (),
+        (Some(path), false) => {
+            obj.save(path.to_string_lossy().as_ref())?;
+        },
+        (_, _) => unreachable!(),
     }
 
     Ok(())

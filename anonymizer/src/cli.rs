@@ -14,13 +14,13 @@ type Path = std::path::PathBuf;
 
 #[derive(Debug)]
 pub struct App {
-    input: Path,
-    output: Option<Path>,
-    patient_name: Option<String>,
-    patient_sex: Option<PatientSex>,
-    patient_birth_day: Option<DicomDateTime>,
-    remove_tags: Option<Vec<Tag>>,
-    dry_run: bool,
+    pub(crate) input: Path,
+    pub(crate) output: Option<Path>,
+    pub(crate) patient_name: Option<String>,
+    pub(crate) patient_sex: Option<PatientSex>,
+    pub(crate) patient_birth_day: Option<DicomDateTime>,
+    pub(crate) remove_tags: Option<Vec<Tag>>,
+    pub(crate) dry_run: bool,
 }
 
 impl App {
