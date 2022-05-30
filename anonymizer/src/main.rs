@@ -2,7 +2,7 @@ use std::u16;
 use dicom_core::chrono::FixedOffset;
 use dicom_core::Tag;
 use dicom_core::value::DicomDateTime;
-use anonymizer::{Anonymizer, PatientSex};
+use anonymizer_lib::{Anonymizer, PatientSex};
 use anyhow::Result;
 use clap::Parser;
 use std::str::FromStr;

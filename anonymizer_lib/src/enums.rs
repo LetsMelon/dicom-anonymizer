@@ -1,7 +1,7 @@
 use std::str::FromStr;
 use derive_more::{Display};
 use dicom_core::Tag;
-use tags_list::List as TagsList;
+use tags_list_lib::List as TagsList;
 use strum::EnumCount;
 
 #[derive(Display, Clone, Debug, EnumCount)]

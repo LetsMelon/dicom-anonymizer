@@ -1,7 +1,7 @@
 [workspace]
 
 members = [
-  "anonymizer",
-  "tags_list",
-  "cli"
+  "anonymizer_lib",
+  "tags_list_lib",
+  "anonymizer"
 ]

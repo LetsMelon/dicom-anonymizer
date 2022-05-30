@@ -3,7 +3,7 @@
 CLI program written in Rust to anonymize DICOM files
 
 ```
-cli 0.1.0
+anonymizer 0.1.0
 Domenic Melcher
 
 USAGE:

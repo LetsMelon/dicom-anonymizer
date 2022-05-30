@@ -1,14 +1,18 @@
 [package]
-name = "anonymizer"
+name = "anonymizer_lib"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anonymizer_lib = { path = "../anonymizer_lib" }
 tags_list_lib = { path = "../tags_list_lib" }
+dicom-object = "0.5.0"
+derive_builder = "0.11.2"
 dicom-core = "0.5.0"
-clap = { version = "3.1.18", features = ["derive"] }
-anyhow = "1.0.57"
+dicom-dictionary-std = "0.5.0"
 chrono = "0.4.19"
+anyhow = "1.0.57"
+derive_more = "0.99.17"
+strum = { version = "0.24", features = ["derive"] }
+strum_macros = "0.24"
