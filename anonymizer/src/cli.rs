@@ -1,9 +1,8 @@
 use std::ffi::OsString;
 use std::str::FromStr;
 use clap::{Arg, ArgMatches, Command};
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use chrono::{DateTime, FixedOffset, NaiveDate, NaiveTime, Utc};
-use chrono::format::parse;
 use dicom_core::Tag;
 use dicom_core::value::DicomDateTime;
 use anonymizer_lib::PatientSex;
@@ -25,7 +24,7 @@ pub struct App {
 
 impl App {
     pub fn new() -> Self {
-        Self::new_from(std::env::args_os().into_iter()).unwrap_or_else(|e| {
+        Self::new_from(std::env::args_os()).unwrap_or_else(|e| {
             println!("{}", e);
             std::process::exit(1);
         })

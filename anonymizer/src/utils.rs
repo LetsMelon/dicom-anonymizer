@@ -5,5 +5,5 @@ pub fn is_dcm_path(path: &str) -> bool {
 }
 
 pub fn parse_date(value: &str) -> ParseResult<NaiveDate> {
-    return NaiveDate::parse_from_str(value, "%Y-%m-%d");
+    NaiveDate::parse_from_str(value, "%Y-%m-%d")
 }

@@ -1,17 +1,11 @@
-use std::u16;
-use dicom_core::chrono::FixedOffset;
-use dicom_core::Tag;
-use dicom_core::value::DicomDateTime;
-use anonymizer_lib::{Anonymizer, PatientSex};
+use anonymizer_lib::Anonymizer;
 use anyhow::Result;
-use clap::Parser;
-use std::str::FromStr;
-use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
-use crate::cli::App;
 
 mod cli;
 mod utils;
 mod validator;
+
+use crate::cli::App;
 
 fn main() -> Result<()> {
     let app = App::new();
@@ -57,7 +51,6 @@ fn main() -> Result<()> {
         (Some(path), false) => {
             obj.save(path.to_string_lossy().as_ref())?;
         },
-        (_, _) => unreachable!(),
     }
 
     Ok(())
