@@ -1,6 +1,6 @@
 use dicom_core::header::{ElementNumber, GroupNumber};
 use dicom_core::Tag;
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CustomTag {
