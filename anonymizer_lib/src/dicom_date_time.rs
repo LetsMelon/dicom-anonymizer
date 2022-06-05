@@ -124,7 +124,7 @@ impl<'de> Deserialize<'de> for CustomDicomDateTime {
         }
 
         assert!(CustomDicomDateTime::field_count() == 1);
-        const FIELDS: &'static [&'static str] = &["data"];
+        const FIELDS: &[&str] = &["data"];
         deserializer.deserialize_struct("CustomDicomDateTime", FIELDS, CustomDicomDateTimeVisitor)
     }
 }

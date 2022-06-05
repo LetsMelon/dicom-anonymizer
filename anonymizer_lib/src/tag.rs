@@ -2,7 +2,7 @@ use dicom_core::header::{ElementNumber, GroupNumber};
 use dicom_core::Tag;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CustomTag {
     pub group: GroupNumber,
     pub element: ElementNumber,
@@ -19,10 +19,7 @@ impl From<Tag> for CustomTag {
 
 impl From<CustomTag> for Tag {
     fn from(ct: CustomTag) -> Self {
-        Tag {
-            0: ct.group,
-            1: ct.element
-        }
+        Tag (ct.group, ct.element)
     }
 }
 

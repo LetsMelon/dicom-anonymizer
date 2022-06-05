@@ -27,7 +27,7 @@ impl AnonymizerMetaBuilder {
         if obj.remove_tags.is_none() {
             obj.remove_tags = Some(Vec::<CustomTag>::new());
         }
-        obj.remove_tags.as_mut().unwrap().push(value.into());
+        obj.remove_tags.as_mut().unwrap().push(value);
 
         obj
     }

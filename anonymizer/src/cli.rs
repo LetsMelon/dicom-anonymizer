@@ -140,10 +140,7 @@ impl App {
 
                     let group_number = u16::from_str_radix( splitted[0].trim_start_matches("0x"), 16)?;
                     let element_number = u16::from_str_radix( splitted[1].trim_start_matches("0x"), 16)?;
-                    remove_tags.push(Tag {
-                        0: group_number,
-                        1: element_number,
-                    });
+                    remove_tags.push(Tag(group_number, element_number));
                 }
 
                 Some(remove_tags)
