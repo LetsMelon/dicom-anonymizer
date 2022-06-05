@@ -42,11 +42,11 @@ impl AnonymizerMetaBuilder {
                 }
             }
             RemoveTagsInput::List(t) => {
-                obj.remove_tags(t.value().into());
+                obj.remove_tags(RemoveTagsInput::from(CustomTag::from_vec(t.value())));
             },
             RemoveTagsInput::VecList(vt) => {
                 for item in vt {
-                    obj.remove_tags(item.into());
+                    obj.remove_tags(RemoveTagsInput::from(item));
                 }
             }
         }

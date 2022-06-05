@@ -54,6 +54,12 @@ impl From<Vec<Tag>> for RemoveTagsInput {
     }
 }
 
+impl From<Vec<CustomTag>> for RemoveTagsInput {
+    fn from(v_ct: Vec<CustomTag>) -> Self {
+        RemoveTagsInput::Vec(v_ct)
+    }
+}
+
 impl From<TagsList> for RemoveTagsInput {
     fn from(t: TagsList) -> Self {
         RemoveTagsInput::List(t)
