@@ -105,9 +105,6 @@ impl App {
     }
 
     pub fn match_args(matches: ArgMatches) -> Result<App> {
-
-        println!("{:?}", matches);
-
         let dry_run = match matches.value_of("dry_run") {
             None => false,
             Some(value) => {
