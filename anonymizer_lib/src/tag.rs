@@ -25,3 +25,9 @@ impl From<CustomTag> for Tag {
         }
     }
 }
+
+impl CustomTag {
+    pub fn from_vec(v_t: Vec<Tag>) -> Vec<CustomTag> {
+        v_t.iter().map(|item| CustomTag::from(item.to_owned())).collect()
+    }
+}

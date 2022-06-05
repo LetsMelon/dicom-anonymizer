@@ -15,5 +15,8 @@ pub use anonymizer::Anonymizer;
 pub use meta::*;
 pub use file::*;
 pub use enums::*;
-pub use tag::CustomTag;
-pub use dicom_date_time::CustomDicomDateTime;
+
+pub mod types {
+    pub use crate::tag::CustomTag;
+    pub use crate::dicom_date_time::CustomDicomDateTime;
+}

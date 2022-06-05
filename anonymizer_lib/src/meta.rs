@@ -1,7 +1,6 @@
-use dicom_core::Tag;
 use serde::{Serialize, Deserialize};
-use crate::dicom_date_time::CustomDicomDateTime;
 
+use crate::dicom_date_time::CustomDicomDateTime;
 use crate::enums::{PatientSex, RemoveTagsInput};
 use crate::tag::CustomTag;
 
@@ -22,7 +21,7 @@ pub struct AnonymizerMeta {
 }
 
 impl AnonymizerMetaBuilder {
-    pub fn remove_tag(&mut self, value: Tag) -> &mut Self {
+    pub fn remove_tag(&mut self, value: CustomTag) -> &mut Self {
         let mut obj = self;
 
         if obj.remove_tags.is_none() {

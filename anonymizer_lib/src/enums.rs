@@ -5,6 +5,8 @@ use tags_list_lib::List as TagsList;
 use strum::EnumCount;
 use serde::{Serialize, Deserialize};
 
+use crate::tag::CustomTag;
+
 #[derive(Display, Copy, Clone, Debug, EnumCount, Serialize, Deserialize)]
 pub enum PatientSex {
     M,
@@ -41,14 +43,14 @@ impl Default for PatientSex {
 }
 
 pub enum RemoveTagsInput {
-    Vec(Vec<Tag>),
+    Vec(Vec<CustomTag>),
     List(TagsList),
-    VecList(Vec<TagsList>)
+    VecList(Vec<TagsList>),
 }
 
 impl From<Vec<Tag>> for RemoveTagsInput {
-    fn from(v: Vec<Tag>) -> Self {
-        RemoveTagsInput::Vec(v)
+    fn from(v_t: Vec<Tag>) -> Self {
+        RemoveTagsInput::Vec(CustomTag::from_vec(v_t))
     }
 }
 

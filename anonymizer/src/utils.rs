@@ -1,7 +1,8 @@
 use chrono::{NaiveDate, ParseResult};
 use crate::App;
 use anyhow::Result;
-use anonymizer_lib::{Anonymizer, AnonymizerMeta, CustomDicomDateTime};
+use anonymizer_lib::{Anonymizer, AnonymizerMeta};
+use anonymizer_lib::types::CustomDicomDateTime;
 
 pub fn is_dcm_path(path: &str) -> bool {
     path.ends_with(".dcm")
