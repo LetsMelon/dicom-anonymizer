@@ -2,6 +2,7 @@ use chrono::{NaiveDate, ParseResult};
 use crate::App;
 use anyhow::Result;
 use anonymizer_lib::{Anonymizer, AnonymizerMeta};
+use anonymizer_lib::types::CustomDicomDateTime;
 
 pub fn is_dcm_path(path: &str) -> bool {
     path.ends_with(".dcm")
@@ -30,7 +31,7 @@ pub fn match_args_into_trait(app: &App) -> Result<AnonymizerMeta> {
 
     match &app.patient_birth_day {
         Some(pbd) => {
-            builder.patient_birth_date(pbd.to_owned());
+            builder.patient_birth_date(CustomDicomDateTime::from(pbd.to_owned()));
         },
         None => (),
     };

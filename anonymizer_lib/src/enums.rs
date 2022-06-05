@@ -3,8 +3,11 @@ use derive_more::{Display};
 use dicom_core::Tag;
 use tags_list_lib::List as TagsList;
 use strum::EnumCount;
+use serde::{Serialize, Deserialize};
 
-#[derive(Display, Clone, Debug, EnumCount)]
+use crate::tag::CustomTag;
+
+#[derive(Display, Copy, Clone, Debug, EnumCount, Serialize, Deserialize)]
 pub enum PatientSex {
     M,
     F,
@@ -40,14 +43,20 @@ impl Default for PatientSex {
 }
 
 pub enum RemoveTagsInput {
-    Vec(Vec<Tag>),
+    Vec(Vec<CustomTag>),
     List(TagsList),
-    VecList(Vec<TagsList>)
+    VecList(Vec<TagsList>),
 }
 
 impl From<Vec<Tag>> for RemoveTagsInput {
-    fn from(v: Vec<Tag>) -> Self {
-        RemoveTagsInput::Vec(v)
+    fn from(v_t: Vec<Tag>) -> Self {
+        RemoveTagsInput::Vec(CustomTag::from_vec(v_t))
+    }
+}
+
+impl From<Vec<CustomTag>> for RemoveTagsInput {
+    fn from(v_ct: Vec<CustomTag>) -> Self {
+        RemoveTagsInput::Vec(v_ct)
     }
 }
 

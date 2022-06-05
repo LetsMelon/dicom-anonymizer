@@ -23,6 +23,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        override: true
+        target: wasm32-wasi
+
     - name: Cargo Cache
       uses: actions/cache@v3
       with:
@@ -43,3 +49,7 @@ jobs:
 
     - name: Build
       run: cargo build --verbose --all-targets
+
+    - name: Test
+      run: |
+        cargo test -p anonymizer_lib
