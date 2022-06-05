@@ -27,6 +27,7 @@ jobs:
       with:
         toolchain: nightly
         override: true
+        target: wasm32-wasi
 
     - name: Cargo Cache
       uses: actions/cache@v3
