@@ -1,8 +1,9 @@
-use dicom_core::{DataElement, dicom_value, VR, value::DicomDateTime};
+use dicom_core::{DataElement, dicom_value, VR, value::DicomDateTime, Tag};
 use dicom_dictionary_std::tags;
 use dicom_object::{DefaultDicomObject, open_file};
 use anyhow::{anyhow, Result};
 
+use crate::CustomDicomDateTime;
 use crate::file::AnonymizerFile;
 use crate::meta::{AnonymizerMeta, AnonymizerMetaBuilder};
 use crate::enums::PatientSex;
@@ -81,7 +82,7 @@ impl Anonymizer {
             ));
         }));
 
-        match_field!(&self.meta.patient_birth_date, (|v: &DicomDateTime| {
+        match_field!(&self.meta.patient_birth_date.as_ref().map(|v| DicomDateTime::from(v.clone())), (|v: &DicomDateTime| {
             self.file.as_mut().unwrap().obj.put(DataElement::new(
                 tags::PATIENT_BIRTH_DATE,
                 VR::DA,
@@ -90,7 +91,7 @@ impl Anonymizer {
         }));
 
         for item in &self.meta.remove_tags {
-            self.file.as_mut().unwrap().obj.remove_element(*item);
+            self.file.as_mut().unwrap().obj.remove_element(Tag::from(item.clone()));
         }
 
         match_field!(&self.meta.patient_sex, (|v: &PatientSex| {
