@@ -928,7 +928,6 @@ dependencies = [
  "js-sys",
  "once_cell",
  "serde",
- "tags_list_lib",
  "wasm-bindgen",
  "web-sys",
 ]
