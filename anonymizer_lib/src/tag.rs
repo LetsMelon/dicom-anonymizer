@@ -70,13 +70,19 @@ mod tests {
     fn can_be_serialized() {
         let c_t = CustomTag::new(10,10);
 
-        assert_eq!("{\"group\":10,\"element\":10}", serde_json::to_string(&c_t).unwrap())
+        assert_eq!(
+            "{\"group\":10,\"element\":10}",
+            serde_json::to_string(&c_t).unwrap()
+        )
     }
 
     #[test]
     fn can_be_deserialized() {
         let c_t = CustomTag::new(20,15);
 
-        assert_eq!(from_str::<CustomTag>("{\"group\":20,\"element\":15}").unwrap(), c_t)
+        assert_eq!(
+            from_str::<CustomTag>("{\"group\":20,\"element\":15}").unwrap(),
+            c_t
+        )
     }
 }
