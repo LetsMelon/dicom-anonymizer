@@ -4,19 +4,19 @@ extern crate derive_more;
 
 #[macro_use]
 mod macros;
-mod meta;
-mod file;
 mod anonymizer;
-mod enums;
-mod tag;
 mod dicom_date_time;
+mod enums;
+mod file;
+mod meta;
+mod tag;
 
 pub use anonymizer::Anonymizer;
-pub use meta::*;
-pub use file::*;
 pub use enums::*;
+pub use file::*;
+pub use meta::*;
 
 pub mod types {
-    pub use crate::tag::CustomTag;
     pub use crate::dicom_date_time::CustomDicomDateTime;
+    pub use crate::tag::CustomTag;
 }

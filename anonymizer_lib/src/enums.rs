@@ -1,9 +1,9 @@
-use std::str::FromStr;
-use derive_more::{Display};
+use derive_more::Display;
 use dicom_core::Tag;
-use tags_list_lib::List as TagsList;
+use serde::{Deserialize, Serialize};
+use std::str::FromStr;
 use strum::EnumCount;
-use serde::{Serialize, Deserialize};
+use tags_list_lib::List as TagsList;
 
 use crate::tag::CustomTag;
 
@@ -18,12 +18,15 @@ impl FromStr for PatientSex {
     type Err = ::strum::ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        assert!(PatientSex::COUNT == 3, "TODO: implement new patient sex value");
+        assert!(
+            PatientSex::COUNT == 3,
+            "TODO: implement new patient sex value"
+        );
         match s.to_ascii_lowercase().as_str() {
             "m" => Ok(PatientSex::M),
             "f" => Ok(PatientSex::F),
             "o" => Ok(PatientSex::O),
-            _ => Err(::strum::ParseError::VariantNotFound)
+            _ => Err(::strum::ParseError::VariantNotFound),
         }
     }
 }
@@ -39,7 +42,9 @@ impl PatientSex {
 }
 
 impl Default for PatientSex {
-    fn default() -> Self { PatientSex::M }
+    fn default() -> Self {
+        PatientSex::M
+    }
 }
 
 pub enum RemoveTagsInput {

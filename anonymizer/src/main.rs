@@ -21,7 +21,7 @@ fn main() -> Result<()> {
         (None, false) => (),
         (Some(path), false) => {
             obj.save(path.to_string_lossy().as_ref())?;
-        },
+        }
     }
 
     Ok(())

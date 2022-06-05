@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::dicom_date_time::CustomDicomDateTime;
 use crate::enums::{PatientSex, RemoveTagsInput};
@@ -43,7 +43,7 @@ impl AnonymizerMetaBuilder {
             }
             RemoveTagsInput::List(t) => {
                 obj.remove_tags(RemoveTagsInput::from(CustomTag::from_vec(t.value())));
-            },
+            }
             RemoveTagsInput::VecList(vt) => {
                 for item in vt {
                     obj.remove_tags(RemoveTagsInput::from(item));

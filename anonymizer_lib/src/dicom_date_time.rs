@@ -1,10 +1,10 @@
-use std::fmt;
 use chrono::DateTime;
 use dicom_core::value::DicomDateTime;
-use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 use field_count::FieldCount;
 use serde::de::{MapAccess, SeqAccess, Visitor};
 use serde::ser::SerializeStruct;
+use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
+use std::fmt;
 
 #[derive(Debug, Clone, FieldCount)]
 pub struct CustomDicomDateTime {
@@ -13,15 +13,15 @@ pub struct CustomDicomDateTime {
 
 impl CustomDicomDateTime {
     pub fn new(data: DicomDateTime) -> Self {
-        Self {
-            data
-        }
+        Self { data }
     }
 }
 
 impl Serialize for CustomDicomDateTime {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: Serializer {
+    where
+        S: Serializer,
+    {
         assert!(CustomDicomDateTime::field_count() == 1);
 
         let mut state = serializer.serialize_struct("CustomDicomDateTime", 1)?;
@@ -32,15 +32,17 @@ impl Serialize for CustomDicomDateTime {
 
 impl<'de> Deserialize<'de> for CustomDicomDateTime {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where
-            D: Deserializer<'de>,
+    where
+        D: Deserializer<'de>,
     {
-        enum Field { Data }
+        enum Field {
+            Data,
+        }
 
         impl<'de> Deserialize<'de> for Field {
             fn deserialize<D>(deserializer: D) -> Result<Field, D::Error>
-                where
-                    D: Deserializer<'de>,
+            where
+                D: Deserializer<'de>,
             {
                 struct FieldVisitor;
 
@@ -52,8 +54,8 @@ impl<'de> Deserialize<'de> for CustomDicomDateTime {
                     }
 
                     fn visit_str<E>(self, value: &str) -> Result<Field, E>
-                        where
-                            E: de::Error,
+                    where
+                        E: de::Error,
                     {
                         match value {
                             "data" => Ok(Field::Data),
@@ -76,16 +78,20 @@ impl<'de> Deserialize<'de> for CustomDicomDateTime {
             }
 
             fn visit_seq<V>(self, mut seq: V) -> Result<CustomDicomDateTime, V::Error>
-                where
-                    V: SeqAccess<'de>,
+            where
+                V: SeqAccess<'de>,
             {
-                let data: String = seq.next_element()?
+                let data: String = seq
+                    .next_element()?
                     .ok_or_else(|| de::Error::invalid_length(0, &self))?;
 
                 let offset = match DateTime::parse_from_str(&*data, "%F %T %:z") {
                     Ok(o) => o,
                     Err(_) => {
-                        return Err(de::Error::custom(format!("Error in parse_from_str ({})", data)))
+                        return Err(de::Error::custom(format!(
+                            "Error in parse_from_str ({})",
+                            data
+                        )))
                     }
                 };
                 match DicomDateTime::try_from(&offset) {
@@ -95,8 +101,8 @@ impl<'de> Deserialize<'de> for CustomDicomDateTime {
             }
 
             fn visit_map<V>(self, mut map: V) -> Result<CustomDicomDateTime, V::Error>
-                where
-                    V: MapAccess<'de>,
+            where
+                V: MapAccess<'de>,
             {
                 let mut data = None;
                 while let Some(key) = map.next_key()? {
@@ -113,10 +119,13 @@ impl<'de> Deserialize<'de> for CustomDicomDateTime {
                 let offset = match DateTime::parse_from_str(&*data_raw, "%F %T %:z") {
                     Ok(o) => o,
                     Err(_) => {
-                        return Err(de::Error::custom(format!("Error in parse_from_str ({})", data_raw)))
+                        return Err(de::Error::custom(format!(
+                            "Error in parse_from_str ({})",
+                            data_raw
+                        )))
                     }
                 };
-                 match DicomDateTime::try_from(&offset) {
+                match DicomDateTime::try_from(&offset) {
                     Ok(d) => Ok(CustomDicomDateTime::new(d)),
                     Err(_) => Err(de::Error::custom("Error")),
                 }
@@ -131,9 +140,7 @@ impl<'de> Deserialize<'de> for CustomDicomDateTime {
 
 impl From<DicomDateTime> for CustomDicomDateTime {
     fn from(ddt: DicomDateTime) -> Self {
-        Self {
-            data: ddt,
-        }
+        Self { data: ddt }
     }
 }
 
@@ -173,18 +180,18 @@ impl PartialEq<CustomDicomDateTime> for DicomDateTime {
 
 #[cfg(test)]
 mod tests {
-    use std::error::Error;
+    use crate::dicom_date_time::CustomDicomDateTime;
     use chrono::FixedOffset;
     use dicom_core::value::{DicomDate, DicomDateTime, DicomTime};
     use serde_json::from_str;
-    use crate::dicom_date_time::CustomDicomDateTime;
+    use std::error::Error;
 
     impl CustomDicomDateTime {
         fn factory_ddt() -> Result<DicomDateTime, Box<dyn Error>> {
             Ok(DicomDateTime::from_date_and_time(
                 DicomDate::from_ymd(2000, 11, 5)?,
-                DicomTime::from_hms(12,14,5)?,
-                FixedOffset::east(60*60)
+                DicomTime::from_hms(12, 14, 5)?,
+                FixedOffset::east(60 * 60),
             )?)
         }
 
@@ -217,7 +224,8 @@ mod tests {
     fn can_be_deserialized() {
         let c_dt = CustomDicomDateTime::factory().unwrap();
 
-        let parsed = from_str::<CustomDicomDateTime>("{\"data\":\"2000-11-05 12:14:05 +01:00\"}").unwrap();
+        let parsed =
+            from_str::<CustomDicomDateTime>("{\"data\":\"2000-11-05 12:14:05 +01:00\"}").unwrap();
 
         assert_eq!(parsed, c_dt)
     }

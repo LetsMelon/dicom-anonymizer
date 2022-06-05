@@ -1,8 +1,8 @@
-use chrono::{NaiveDate, ParseResult};
 use crate::App;
-use anyhow::Result;
-use anonymizer_lib::{Anonymizer, AnonymizerMeta};
 use anonymizer_lib::types::CustomDicomDateTime;
+use anonymizer_lib::{Anonymizer, AnonymizerMeta};
+use anyhow::Result;
+use chrono::{NaiveDate, ParseResult};
 
 pub fn is_dcm_path(path: &str) -> bool {
     path.ends_with(".dcm")
@@ -25,21 +25,21 @@ pub fn match_args_into_trait(app: &App) -> Result<AnonymizerMeta> {
     match &app.patient_sex {
         Some(ps) => {
             builder.patient_sex(ps.to_owned());
-        },
+        }
         None => (),
     };
 
     match &app.patient_birth_day {
         Some(pbd) => {
             builder.patient_birth_date(CustomDicomDateTime::from(pbd.to_owned()));
-        },
+        }
         None => (),
     };
 
     match &app.remove_tags {
         Some(tags) => {
             builder.remove_tags(tags.to_owned().into());
-        },
+        }
         None => (),
     };
 

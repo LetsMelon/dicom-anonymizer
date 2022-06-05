@@ -1,8 +1,8 @@
+use anonymizer_lib::{Anonymizer, AnonymizerMeta};
 use dicom_object::from_reader;
 use once_cell::sync::OnceCell;
 use wasm_bindgen::prelude::*;
 use web_sys::console;
-use anonymizer_lib::{Anonymizer, AnonymizerMeta};
 
 static ANONYMIZER: OnceCell<Anonymizer> = OnceCell::new();
 
