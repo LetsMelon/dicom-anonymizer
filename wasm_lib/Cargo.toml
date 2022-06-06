@@ -11,9 +11,6 @@ crate-type = ["cdylib"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[build]
-target = "wasm32-wasi"
-
 [dependencies]
 anonymizer_lib = { path = "../anonymizer_lib" }
 dicom-object = "0.5.0"

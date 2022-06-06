@@ -13,7 +13,7 @@ fn get_mut_anonymizer() -> Result<Anonymizer, JsValue> {
 }
 
 #[wasm_bindgen]
-pub fn init(fr: &[u8]) -> Result<(), JsValue> {
+pub fn init_anonymize(fr: &[u8]) -> Result<(), JsValue> {
     let obj = from_reader(fr).unwrap_throw();
     let any = Anonymizer::from_object(obj).unwrap_throw();
     ANONYMIZER.set(any).unwrap_throw();
