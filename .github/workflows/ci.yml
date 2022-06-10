@@ -53,3 +53,4 @@ jobs:
     - name: Test
       run: |
         cargo test -p anonymizer_lib
+        cargo test -p wasm_lib --target wasm32-unknown-unknown

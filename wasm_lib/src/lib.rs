@@ -33,3 +33,13 @@ pub fn anonymize(config: &JsValue) -> Result<(), JsValue> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use wasm_bindgen_test::*;
+
+    #[wasm_bindgen_test]
+    fn pass() {
+        assert_eq!(1, 1);
+    }
+}
