@@ -1,8 +1,9 @@
+use std::io::Cursor;
 use anonymizer_lib::{Anonymizer, AnonymizerMeta};
 use dicom_object::from_reader;
+use js_sys::Uint8Array;
 use once_cell::sync::OnceCell;
 use wasm_bindgen::prelude::*;
-use web_sys::console;
 
 static ANONYMIZER: OnceCell<Anonymizer> = OnceCell::new();
 
@@ -13,8 +14,10 @@ fn get_mut_anonymizer() -> Result<Anonymizer, JsValue> {
 }
 
 #[wasm_bindgen]
-pub fn init_anonymize(fr: &[u8]) -> Result<(), JsValue> {
-    let obj = from_reader(fr).unwrap_throw();
+pub fn init_anonymize(data: Uint8Array) -> Result<(), JsValue> {
+    let file = Cursor::new(data.to_vec());
+
+    let obj = from_reader(file).unwrap_throw();
     let any = Anonymizer::from_object(obj).unwrap_throw();
     ANONYMIZER.set(any).unwrap_throw();
 
