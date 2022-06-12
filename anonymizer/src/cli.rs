@@ -8,7 +8,7 @@ use std::ffi::OsString;
 use std::str::FromStr;
 
 use crate::validator::{
-    validator_is_date, validator_is_dcm_path, validator_is_file_path, validator_is_sex,
+    validator_is_date, validator_is_dcm_file, validator_is_dcm_path, validator_is_sex,
 };
 
 type Path = std::path::PathBuf;
@@ -61,14 +61,11 @@ impl App {
                     .required(true)
                     .help("DICOM file to anonymize")
                     .validator(|v| -> Result<(), String> {
-                        let v1 = validator_is_dcm_path(v);
-                        let v2 = validator_is_file_path(v);
+                        let v_df = validator_is_dcm_file(v);
 
-                        match (v1, v2) {
-                            (Ok(_), Ok(_)) => Ok(()),
-                            (Err(s), Ok(_)) => Err(s),
-                            (Ok(_), Err(s)) => Err(s),
-                            (Err(s1), Err(s2)) => Err(format!("{0}, {1}", s1, s2)),
+                        match v_df {
+                            Ok(_) => Ok(()),
+                            Err(e) => Err(e),
                         }
                     }),
                 Arg::new("output")
