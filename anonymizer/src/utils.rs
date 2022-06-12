@@ -7,6 +7,9 @@ use std::fs::File;
 use std::io::{BufReader, Read};
 use std::path::Path;
 
+const DICM_PREAMBLE: [u8; 128] = [0u8; 128];
+const DICM_MAGIC_CODE: [u8; 4] = [b'D', b'I', b'C', b'M'];
+
 pub fn is_dcm_file<P>(path: P) -> Result<bool>
 where
     P: AsRef<Path>,
@@ -19,12 +22,11 @@ where
 
     let mut buf = [0u8; 128];
     file.read_exact(&mut buf)?;
-    assert_eq!(buf, [0u8; 128], "First 128 bytes should be 0x0");
+    assert_eq!(buf, DICM_PREAMBLE, "First 128 bytes should be 0x0");
 
     let mut buf = [0u8; 4];
     file.read_exact(&mut buf)?;
-    let magic_dicom_number = [b'D', b'I', b'C', b'M'];
-    assert_eq!(buf, magic_dicom_number, "Magic number should be DICM");
+    assert_eq!(buf, DICM_MAGIC_CODE, "Magic number should be DICM");
 
     Ok(true)
 }
