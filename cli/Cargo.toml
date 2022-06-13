@@ -5,6 +5,10 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[[bin]]
+name = "dicom-tools"
+path = "src/main.rs"
+
 [dependencies]
 anonymizer_lib = { path = "../anonymizer_lib" }
 tags_list_lib = { path = "../tags_list_lib" }

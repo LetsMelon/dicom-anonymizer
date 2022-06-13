@@ -1,13 +1,10 @@
 use anonymizer_lib::Anonymizer;
 use anyhow::Result;
 
-mod args;
-mod cli;
-mod utils;
-mod validator;
+mod app;
 
-use crate::cli::App;
-use crate::utils::match_args_into_trait;
+use app::utils::match_args_into_trait;
+use app::cli::App;
 
 fn main() -> Result<()> {
     let app = App::new();

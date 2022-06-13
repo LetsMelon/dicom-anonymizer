@@ -7,9 +7,7 @@ use dicom_core::Tag;
 use std::ffi::OsString;
 use std::str::FromStr;
 
-use crate::args::{
-    dry_run, input, output, patient_birth_day, patient_name, patient_sex, remove_tags,
-};
+use crate::app::args::*;
 
 type Path = std::path::PathBuf;
 
@@ -45,11 +43,12 @@ impl App {
     }
 
     fn build_cli() -> Command<'static> {
-        let app = Command::new("anonymizer")
+        let app = Command::new("dicom-tools")
+            .bin_name("dicom-tools")
             .version("0.1.0")
             .author("Domenic Melcher")
             .arg_required_else_help(true)
-            .args(&[
+            .subcommands([Command::new("anonymizer").args(&[
                 dry_run(),
                 input(),
                 output(),
@@ -57,7 +56,7 @@ impl App {
                 patient_sex(),
                 patient_birth_day(),
                 remove_tags(),
-            ]);
+            ])]);
 
         app
     }
