@@ -3,18 +3,6 @@
 version = 3
 
 [[package]]
-name = "anonymizer"
-version = "0.1.0"
-dependencies = [
- "anonymizer_lib",
- "anyhow",
- "chrono",
- "clap",
- "dicom-core",
- "tags_list_lib",
-]
-
-[[package]]
 name = "anonymizer_lib"
 version = "0.1.0"
 dependencies = [
@@ -139,6 +127,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a37c35f1112dad5e6e0b1adaff798507497a18fceeb30cceb3bae7d1427b9213"
 dependencies = [
  "os_str_bytes",
+]
+
+[[package]]
+name = "cli"
+version = "0.1.0"
+dependencies = [
+ "anonymizer_lib",
+ "anyhow",
+ "chrono",
+ "clap",
+ "dicom-core",
+ "tags_list_lib",
 ]
 
 [[package]]

@@ -3,6 +3,6 @@
 members = [
   "anonymizer_lib",
   "tags_list_lib",
-  "anonymizer",
+  "cli",
   "wasm_lib"
 ]
