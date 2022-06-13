@@ -4,8 +4,10 @@ use crate::validator::{
     validator_is_date, validator_is_dcm_file, validator_is_dcm_path, validator_is_sex,
 };
 
+type StaticArg = Arg<'static>;
+
 #[inline(always)]
-pub fn dry_run() -> Arg<'static> {
+pub fn dry_run() -> StaticArg {
     Arg::new("dry_run")
         .takes_value(false)
         .short('d')
@@ -14,7 +16,7 @@ pub fn dry_run() -> Arg<'static> {
 }
 
 #[inline(always)]
-pub fn input() -> Arg<'static> {
+pub fn input() -> StaticArg {
     Arg::new("input")
         .takes_value(true)
         .value_name("FILE")
@@ -31,7 +33,7 @@ pub fn input() -> Arg<'static> {
 }
 
 #[inline(always)]
-pub fn output() -> Arg<'static> {
+pub fn output() -> StaticArg {
     Arg::new("output")
         .takes_value(true)
         .short('o')
@@ -41,7 +43,7 @@ pub fn output() -> Arg<'static> {
 }
 
 #[inline(always)]
-pub fn patient_name() -> Arg<'static> {
+pub fn patient_name() -> StaticArg {
     Arg::new("patient_name")
         .takes_value(true)
         .short('p')
@@ -50,7 +52,7 @@ pub fn patient_name() -> Arg<'static> {
 }
 
 #[inline(always)]
-pub fn patient_sex() -> Arg<'static> {
+pub fn patient_sex() -> StaticArg {
     Arg::new("patient_sex")
         .takes_value(true)
         .long("patient-sex")
@@ -59,7 +61,7 @@ pub fn patient_sex() -> Arg<'static> {
 }
 
 #[inline(always)]
-pub fn patient_birth_day() -> Arg<'static> {
+pub fn patient_birth_day() -> StaticArg {
     Arg::new("patient_birth_day")
         .takes_value(true)
         .long("patient-birth-day")
@@ -69,7 +71,7 @@ pub fn patient_birth_day() -> Arg<'static> {
 }
 
 #[inline(always)]
-pub fn remove_tags() -> Arg<'static> {
+pub fn remove_tags() -> StaticArg {
     Arg::new("remove_tags")
         .takes_value(true)
         .multiple_values(true)
