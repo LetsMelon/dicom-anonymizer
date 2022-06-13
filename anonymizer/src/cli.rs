@@ -1,14 +1,14 @@
 use anonymizer_lib::PatientSex;
 use anyhow::Result;
 use chrono::{DateTime, FixedOffset, NaiveDate, NaiveTime, Utc};
-use clap::{Arg, ArgMatches, Command};
+use clap::{ArgMatches, Command};
 use dicom_core::value::DicomDateTime;
 use dicom_core::Tag;
 use std::ffi::OsString;
 use std::str::FromStr;
 
-use crate::validator::{
-    validator_is_date, validator_is_dcm_file, validator_is_dcm_path, validator_is_sex,
+use crate::args::{
+    dry_run, input, output, patient_birth_day, patient_name, patient_sex, remove_tags,
 };
 
 type Path = std::path::PathBuf;
@@ -50,54 +50,13 @@ impl App {
             .author("Domenic Melcher")
             .arg_required_else_help(true)
             .args(&[
-                Arg::new("dry_run")
-                    .takes_value(false)
-                    .short('d')
-                    .long("dry-run")
-                    .help("If set then the file will not be saved"),
-                Arg::new("input")
-                    .takes_value(true)
-                    .value_name("FILE")
-                    .required(true)
-                    .help("DICOM file to anonymize")
-                    .validator(|v| -> Result<(), String> {
-                        let v_df = validator_is_dcm_file(v);
-
-                        match v_df {
-                            Ok(_) => Ok(()),
-                            Err(e) => Err(e),
-                        }
-                    }),
-                Arg::new("output")
-                    .takes_value(true)
-                    .short('o')
-                    .long("output")
-                    .help("Output path for DICOM file")
-                    .validator(validator_is_dcm_path),
-                Arg::new("patient_name")
-                    .takes_value(true)
-                    .short('p')
-                    .long("patient-name")
-                    .help("Change the patient name"),
-                Arg::new("patient_sex")
-                    .takes_value(true)
-                    .long("patient-sex")
-                    .help("Change the patient sex (M,F,O)")
-                    .validator(validator_is_sex),
-                Arg::new("patient_birth_day")
-                    .takes_value(true)
-                    .long("patient-birth-day")
-                    .aliases(&["patient-bd", "patient-birthday"])
-                    .help("Change the patient birthday (yyy-mm-dd or yyyy-m-d)")
-                    .validator(validator_is_date),
-                Arg::new("remove_tags")
-                    .takes_value(true)
-                    .multiple_values(true)
-                    .value_delimiter(',')
-                    .long("remove-tags")
-                    .help(
-                        "Remove dicom tags from the object. Example: 0x0010-0x0020,0x0010-0x0040",
-                    ),
+                dry_run(),
+                input(),
+                output(),
+                patient_name(),
+                patient_sex(),
+                patient_birth_day(),
+                remove_tags(),
             ]);
 
         app

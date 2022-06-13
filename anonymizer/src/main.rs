@@ -1,6 +1,7 @@
 use anonymizer_lib::Anonymizer;
 use anyhow::Result;
 
+mod args;
 mod cli;
 mod utils;
 mod validator;
