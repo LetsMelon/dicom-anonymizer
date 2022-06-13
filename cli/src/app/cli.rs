@@ -8,6 +8,7 @@ use std::ffi::OsString;
 use std::str::FromStr;
 
 use crate::app::args::*;
+use crate::app::commands::anonymizer;
 
 type Path = std::path::PathBuf;
 
@@ -48,15 +49,7 @@ impl App {
             .version("0.1.0")
             .author("Domenic Melcher")
             .arg_required_else_help(true)
-            .subcommands([Command::new("anonymizer").args(&[
-                dry_run(),
-                input(),
-                output(),
-                patient_name(),
-                patient_sex(),
-                patient_birth_day(),
-                remove_tags(),
-            ])]);
+            .subcommands([anonymizer()]);
 
         app
     }

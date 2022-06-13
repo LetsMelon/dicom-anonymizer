@@ -3,8 +3,8 @@ use anyhow::Result;
 
 mod app;
 
-use app::utils::match_args_into_trait;
 use app::cli::App;
+use app::utils::match_args_into_trait;
 
 fn main() -> Result<()> {
     let app = App::new();
