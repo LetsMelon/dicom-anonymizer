@@ -8,6 +8,7 @@ use std::ffi::OsString;
 use std::str::FromStr;
 
 use crate::app::commands::{anonymizer, config};
+use crate::app::types::StaticCommand;
 
 type Path = std::path::PathBuf;
 
@@ -42,15 +43,13 @@ impl App {
         Self::match_args(matches)
     }
 
-    fn build_cli() -> Command<'static> {
-        let app = Command::new("dicom-tools")
+    fn build_cli() -> StaticCommand {
+        Command::new("dicom-tools")
             .bin_name("dicom-tools")
             .version("0.1.0")
             .author("Domenic Melcher")
             .arg_required_else_help(true)
-            .subcommands([anonymizer(), config()]);
-
-        app
+            .subcommands([anonymizer(), config()])
     }
 
     pub fn match_args(matches: ArgMatches) -> Result<App> {
