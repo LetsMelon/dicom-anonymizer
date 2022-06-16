@@ -10,12 +10,7 @@ use std::path::PathBuf;
 use std::str::FromStr;
 
 use crate::app::commands::{anonymizer, config};
-use crate::app::types::StaticCommand;
-
-trait Matcher<T, Y> {
-    fn match_args(matches: ArgMatches) -> Result<T>;
-    fn match_trait(&self) -> Result<Y>;
-}
+use crate::app::types::{Matcher, StaticCommand};
 
 #[derive(Debug)]
 pub struct AnonymizerValues {
