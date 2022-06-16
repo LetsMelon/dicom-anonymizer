@@ -1,17 +1,17 @@
 use clap::{Arg, Command};
 
-use crate::app::args::*;
+use crate::app::args::anonymizer;
 use crate::app::types::StaticCommand;
 
 pub fn anonymizer() -> StaticCommand {
     Command::new("anonymizer").args(&[
-        dry_run(),
-        input(),
-        output(),
-        patient_name(),
-        patient_sex(),
-        patient_birth_day(),
-        remove_tags(),
+        anonymizer::dry_run(),
+        anonymizer::input(),
+        anonymizer::output(),
+        anonymizer::patient_name(),
+        anonymizer::patient_sex(),
+        anonymizer::patient_birth_day(),
+        anonymizer::remove_tags(),
     ])
 }
 

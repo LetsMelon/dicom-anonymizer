@@ -1,8 +1,8 @@
-mod args;
 mod commands;
 mod types;
 mod validator;
+mod args;
+mod config;
 
 pub mod cli;
-mod config;
 pub mod utils;
