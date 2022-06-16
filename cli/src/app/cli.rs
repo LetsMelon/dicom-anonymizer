@@ -6,12 +6,11 @@ use clap::{ArgMatches, Command};
 use dicom_core::value::DicomDateTime;
 use dicom_core::Tag;
 use std::ffi::OsString;
+use std::path::PathBuf;
 use std::str::FromStr;
 
 use crate::app::commands::{anonymizer, config};
 use crate::app::types::StaticCommand;
-
-type Path = std::path::PathBuf;
 
 trait Matcher<T, Y> {
     fn match_args(matches: ArgMatches) -> Result<T>;
@@ -20,8 +19,8 @@ trait Matcher<T, Y> {
 
 #[derive(Debug)]
 pub struct AnonymizerValues {
-    pub(crate) input: Path,
-    pub(crate) output: Option<Path>,
+    pub(crate) input: PathBuf,
+    pub(crate) output: Option<PathBuf>,
     pub(crate) patient_name: Option<String>,
     pub(crate) patient_sex: Option<PatientSex>,
     pub(crate) patient_birth_day: Option<DicomDateTime>,
@@ -36,8 +35,8 @@ impl Matcher<AnonymizerValues, AnonymizerMeta> for AnonymizerValues {
             Some(value) => value.parse().unwrap_or(false),
         };
 
-        let input = Path::from(matches.value_of("input").unwrap());
-        let output = matches.value_of("output").map(Path::from);
+        let input = PathBuf::from(matches.value_of("input").unwrap());
+        let output = matches.value_of("output").map(PathBuf::from);
 
         let patient_name = matches.value_of("patient_name").map(str::to_string);
         let patient_sex = match matches.value_of("patient_sex") {
