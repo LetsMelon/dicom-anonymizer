@@ -1,1 +1,4 @@
-pub mod values;
+mod logic;
+mod values;
+
+pub use logic::logic;
