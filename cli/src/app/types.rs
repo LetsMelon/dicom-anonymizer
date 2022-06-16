@@ -1,5 +1,5 @@
-use clap::{Arg, ArgMatches, Command};
 use anyhow::Result;
+use clap::{Arg, ArgMatches, Command};
 
 pub type StaticCommand = Command<'static>;
 pub type StaticArg = Arg<'static>;

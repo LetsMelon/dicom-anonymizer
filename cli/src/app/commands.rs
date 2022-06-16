@@ -1,4 +1,4 @@
-use clap::{Arg, Command};
+use clap::Command;
 
 use crate::app::args::*;
 use crate::app::types::StaticCommand;
