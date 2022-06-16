@@ -1,6 +1,5 @@
 use anyhow::Result;
 use chrono::{NaiveDate, ParseResult};
-use std::ffi::OsStr;
 use std::fs::File;
 use std::io::{BufReader, Read};
 use std::path::Path;
@@ -33,11 +32,9 @@ pub fn is_dcm_path<P>(path: P) -> bool
 where
     P: AsRef<Path>,
 {
-    let dcm_extension = OsStr::new("dcm");
-    match path.as_ref().extension() {
-        Some(dcm_extension) => true,
-        None => false,
-        Some(_) => false,
+    match path.as_ref().extension().map(|ext| ext.to_str()) {
+        Some(Some("dcm")) => true,
+        _ => false,
     }
 }
 
