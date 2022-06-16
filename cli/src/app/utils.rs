@@ -1,8 +1,6 @@
-use crate::App;
-use anonymizer_lib::types::CustomDicomDateTime;
-use anonymizer_lib::{Anonymizer, AnonymizerMeta};
 use anyhow::Result;
 use chrono::{NaiveDate, ParseResult};
+use std::ffi::OsStr;
 use std::fs::File;
 use std::io::{BufReader, Read};
 use std::path::Path;
@@ -35,43 +33,14 @@ pub fn is_dcm_path<P>(path: P) -> bool
 where
     P: AsRef<Path>,
 {
-    path.as_ref().ends_with(".dcm")
+    let dcm_extension = OsStr::new("dcm");
+    match path.as_ref().extension() {
+        Some(dcm_extension) => true,
+        None => false,
+        Some(_) => false,
+    }
 }
 
 pub fn parse_date(value: &str) -> ParseResult<NaiveDate> {
     NaiveDate::parse_from_str(value, "%Y-%m-%d")
-}
-
-pub fn match_args_into_trait(app: &App) -> Result<AnonymizerMeta> {
-    let mut builder = Anonymizer::meta_builder();
-
-    match &app.patient_name {
-        Some(v) => {
-            builder.patient_name(v);
-        }
-        None => (),
-    }
-
-    match &app.patient_sex {
-        Some(ps) => {
-            builder.patient_sex(ps.to_owned());
-        }
-        None => (),
-    };
-
-    match &app.patient_birth_day {
-        Some(pbd) => {
-            builder.patient_birth_date(CustomDicomDateTime::from(pbd.to_owned()));
-        }
-        None => (),
-    };
-
-    match &app.remove_tags {
-        Some(tags) => {
-            builder.remove_tags(tags.to_owned().into());
-        }
-        None => (),
-    };
-
-    Ok(builder.build()?)
 }

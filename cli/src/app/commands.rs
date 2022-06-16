@@ -27,9 +27,6 @@ pub fn config() -> StaticCommand {
                 .takes_value(false)
                 .short('m')
                 .long("modify"),
-            Arg::new("read")
-                .takes_value(false)
-                .short('m')
-                .long("modify"),
+            Arg::new("read").takes_value(false).short('r').long("read"),
         ])
 }

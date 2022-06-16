@@ -2,7 +2,8 @@ use clap::Arg;
 
 use crate::app::types::StaticArg;
 use crate::app::validator::{
-    validator_is_date, validator_is_dcm_file, validator_is_dcm_path, validator_is_sex,
+    validator_is_date, validator_is_dcm_file, validator_is_dcm_path, validator_is_file_path,
+    validator_is_sex,
 };
 
 #[inline(always)]
