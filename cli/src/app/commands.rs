@@ -1,6 +1,6 @@
 use clap::{Arg, Command};
 
-use crate::app::args::anonymizer;
+use crate::app::args::*;
 use crate::app::types::StaticCommand;
 
 pub fn anonymizer() -> StaticCommand {
@@ -18,15 +18,5 @@ pub fn anonymizer() -> StaticCommand {
 pub fn config() -> StaticCommand {
     Command::new("config")
         .about("Create and modify config files")
-        .args(&[
-            Arg::new("create")
-                .takes_value(false)
-                .short('c')
-                .long("create"),
-            Arg::new("modify")
-                .takes_value(false)
-                .short('m')
-                .long("modify"),
-            Arg::new("read").takes_value(false).short('r').long("read"),
-        ])
+        .args(&[config::create(), config::modify(), config::read()])
 }
