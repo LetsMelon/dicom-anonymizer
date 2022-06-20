@@ -9,7 +9,7 @@ use std::path::PathBuf;
 use std::str::FromStr;
 
 use crate::app::types::Matcher;
-use crate::app::utils::{parse_date, parse_datetime, parse_tag};
+use crate::app::utils::{parse_date, parse_datetime, parse_datetime_utc, parse_tag};
 
 #[derive(Debug)]
 pub struct AnonymizerValues {
@@ -40,8 +40,7 @@ impl Matcher<AnonymizerValues, AnonymizerMeta> for AnonymizerValues {
         let patient_birth_day = match matches.value_of("patient_birth_day") {
             None => None,
             Some(pbd) => {
-                let ndt = parse_datetime(pbd)?;
-                let dt_offset: DateTime<FixedOffset> = DateTime::<Utc>::from_utc(ndt, Utc).into();
+                let dt_offset = parse_datetime_utc(pbd)?;
                 Some(DicomDateTime::try_from(&dt_offset)?)
             }
         };

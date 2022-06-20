@@ -1,5 +1,5 @@
 use anyhow::Result;
-use chrono::{NaiveDate, NaiveDateTime, NaiveTime, ParseResult};
+use chrono::{DateTime, FixedOffset, NaiveDate, NaiveDateTime, NaiveTime, ParseResult, Utc};
 use dicom_core::Tag;
 use std::fs::File;
 use std::io::{BufReader, Read};
@@ -45,6 +45,12 @@ pub fn parse_date(value: &str) -> ParseResult<NaiveDate> {
 
 pub fn parse_datetime(value: &str) -> ParseResult<NaiveDateTime> {
     parse_date(value).map(|value| value.and_time(NaiveTime::from_hms(0, 0, 0)))
+}
+
+pub fn parse_datetime_utc(value: &str) -> ParseResult<DateTime<FixedOffset>> {
+    let ndt = parse_datetime(value)?;
+    let dtf: DateTime<FixedOffset> = DateTime::<Utc>::from_utc(ndt, Utc).into();
+    Ok(dtf)
 }
 
 pub fn parse_tag(value: &str) -> Result<Tag> {
