@@ -1,0 +1,8 @@
+version: "1.0"
+
+config:
+  patient_name: "Domenic Melcher"
+  patient_sex: "f"
+  remove_tags:
+      - "0x0010-0x0020"
+      - "0x0010-0x0040"

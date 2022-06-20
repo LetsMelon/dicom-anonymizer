@@ -1,8 +1,8 @@
 mod anonymizer;
 mod args;
 mod commands;
-mod config;
-mod types;
+pub mod config;
+pub mod types;
 mod utils;
 mod validator;
 
