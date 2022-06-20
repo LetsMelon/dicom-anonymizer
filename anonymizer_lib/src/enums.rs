@@ -7,7 +7,7 @@ use tags_list_lib::List as TagsList;
 
 use crate::tag::CustomTag;
 
-#[derive(Display, Copy, Clone, Debug, EnumCount, Serialize, Deserialize)]
+#[derive(Display, Copy, Clone, Debug, EnumCount, Serialize, Deserialize, Eq, PartialEq)]
 pub enum PatientSex {
     M,
     F,
