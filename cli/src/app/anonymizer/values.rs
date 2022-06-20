@@ -9,6 +9,7 @@ use std::path::PathBuf;
 use std::str::FromStr;
 
 use crate::app::types::Matcher;
+use crate::app::utils::{parse_date, parse_datetime, parse_tag};
 
 #[derive(Debug)]
 pub struct AnonymizerValues {
@@ -39,8 +40,7 @@ impl Matcher<AnonymizerValues, AnonymizerMeta> for AnonymizerValues {
         let patient_birth_day = match matches.value_of("patient_birth_day") {
             None => None,
             Some(pbd) => {
-                let ndt = NaiveDate::parse_from_str(&*pbd, "%Y-%m-%d")?
-                    .and_time(NaiveTime::from_hms(0, 0, 0));
+                let ndt = parse_datetime(pbd)?;
                 let dt_offset: DateTime<FixedOffset> = DateTime::<Utc>::from_utc(ndt, Utc).into();
                 Some(DicomDateTime::try_from(&dt_offset)?)
             }
@@ -50,13 +50,7 @@ impl Matcher<AnonymizerValues, AnonymizerMeta> for AnonymizerValues {
             Some(rt) => {
                 let mut remove_tags = Vec::<Tag>::new();
                 for item in rt {
-                    let splitted = item.split('-').collect::<Vec<&str>>();
-
-                    let group_number =
-                        u16::from_str_radix(splitted[0].trim_start_matches("0x"), 16)?;
-                    let element_number =
-                        u16::from_str_radix(splitted[1].trim_start_matches("0x"), 16)?;
-                    remove_tags.push(Tag(group_number, element_number));
+                    remove_tags.push(parse_tag(item)?);
                 }
 
                 Some(remove_tags)

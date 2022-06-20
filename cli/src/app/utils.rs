@@ -1,5 +1,6 @@
 use anyhow::Result;
-use chrono::{NaiveDate, ParseResult};
+use chrono::{NaiveDate, NaiveDateTime, NaiveTime, ParseResult};
+use dicom_core::Tag;
 use std::fs::File;
 use std::io::{BufReader, Read};
 use std::path::Path;
@@ -40,4 +41,17 @@ where
 
 pub fn parse_date(value: &str) -> ParseResult<NaiveDate> {
     NaiveDate::parse_from_str(value, "%Y-%m-%d")
+}
+
+pub fn parse_datetime(value: &str) -> ParseResult<NaiveDateTime> {
+    parse_date(value).map(|value| value.and_time(NaiveTime::from_hms(0, 0, 0)))
+}
+
+pub fn parse_tag(value: &str) -> Result<Tag> {
+    let splitted = value.split('-').collect::<Vec<&str>>();
+
+    let group_number = u16::from_str_radix(splitted[0].trim_start_matches("0x"), 16)?;
+    let element_number = u16::from_str_radix(splitted[1].trim_start_matches("0x"), 16)?;
+
+    Ok(Tag(group_number, element_number))
 }
