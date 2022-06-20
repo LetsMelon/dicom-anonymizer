@@ -2,7 +2,8 @@ use clap::Arg;
 
 use crate::app::types::StaticArg;
 use crate::app::validator::{
-    validator_is_date, validator_is_dcm_file, validator_is_dcm_path, validator_is_sex,
+    validator_is_date, validator_is_dcm_file, validator_is_dcm_path, validator_is_file_path,
+    validator_is_sex,
 };
 
 #[inline(always)]
@@ -77,4 +78,14 @@ pub fn remove_tags() -> StaticArg {
         .value_delimiter(',')
         .long("remove-tags")
         .help("Remove dicom tags from the object. Example: 0x0010-0x0020,0x0010-0x0040")
+}
+
+#[inline(always)]
+pub fn config() -> StaticArg {
+    Arg::new("config")
+        .takes_value(true)
+        .short('c')
+        .long("config")
+        .help("Custom config yaml-file with presets")
+        .validator(validator_is_file_path)
 }

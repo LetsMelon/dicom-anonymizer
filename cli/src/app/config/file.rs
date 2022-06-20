@@ -14,10 +14,10 @@ use crate::generate_key;
 
 #[derive(Default, Debug)]
 pub struct ConfigFile {
-    patient_name: Option<String>,
-    patient_birth_day: Option<DicomDateTime>,
-    patient_sex: Option<PatientSex>,
-    remove_tags: Option<Vec<Tag>>,
+    pub patient_name: Option<String>,
+    pub patient_birth_day: Option<DicomDateTime>,
+    pub patient_sex: Option<PatientSex>,
+    pub remove_tags: Option<Vec<Tag>>,
 }
 
 impl IConfigFile for ConfigFile {
