@@ -19,5 +19,10 @@ pub fn anonymizer() -> StaticCommand {
 pub fn config() -> StaticCommand {
     Command::new("config")
         .about("Create and modify config files")
-        .args(&[config::create(), config::modify(), config::read()])
+        .args(&[
+            config::input(),
+            config::create(),
+            config::modify(),
+            config::read(),
+        ])
 }
