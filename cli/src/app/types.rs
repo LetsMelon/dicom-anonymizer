@@ -5,7 +5,7 @@ use yaml_rust::Yaml;
 pub type StaticCommand = Command<'static>;
 pub type StaticArg = Arg<'static>;
 
-pub trait Matcher<T, Y> {
+pub trait IMatcher<T, Y> {
     fn match_args(matches: ArgMatches) -> Result<T>;
     fn match_trait(&self) -> Result<Y>;
 }

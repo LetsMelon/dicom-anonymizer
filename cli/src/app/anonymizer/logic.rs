@@ -3,7 +3,7 @@ use anyhow::Result;
 use clap::ArgMatches;
 
 use crate::app::anonymizer::values::AnonymizerValues;
-use crate::app::types::Matcher;
+use crate::app::types::IMatcher;
 
 pub fn logic(matches: ArgMatches) -> Result<()> {
     let matches =

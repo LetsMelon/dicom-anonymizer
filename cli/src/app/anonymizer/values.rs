@@ -8,7 +8,7 @@ use dicom_core::Tag;
 use std::path::PathBuf;
 use std::str::FromStr;
 
-use crate::app::types::Matcher;
+use crate::app::types::IMatcher;
 use crate::app::utils::{parse_datetime_utc, parse_tag};
 
 #[derive(Debug)]
@@ -22,7 +22,7 @@ pub struct AnonymizerValues {
     pub(crate) dry_run: bool,
 }
 
-impl Matcher<AnonymizerValues, AnonymizerMeta> for AnonymizerValues {
+impl IMatcher<AnonymizerValues, AnonymizerMeta> for AnonymizerValues {
     fn match_args(matches: ArgMatches) -> Result<AnonymizerValues> {
         let dry_run = match matches.value_of("dry_run") {
             None => false,
