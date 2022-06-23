@@ -1,3 +1,4 @@
+use crate::app::config::ConfigFileVersions;
 use anonymizer_lib::types::CustomDicomDateTime;
 use anonymizer_lib::{Anonymizer, AnonymizerMeta, PatientSex};
 use anyhow::Result;
@@ -9,7 +10,6 @@ use std::str::FromStr;
 
 use crate::app::types::Matcher;
 use crate::app::utils::{parse_datetime_utc, parse_tag};
-use crate::ConfigFileVersions;
 
 #[derive(Debug)]
 pub struct AnonymizerValues {
