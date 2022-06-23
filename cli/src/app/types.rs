@@ -5,9 +5,9 @@ use yaml_rust::Yaml;
 pub type StaticCommand = Command<'static>;
 pub type StaticArg = Arg<'static>;
 
-pub trait IMatcher<T, Y> {
-    fn match_args(matches: ArgMatches) -> Result<T>;
-    fn match_trait(&self) -> Result<Y>;
+pub trait IMatcher<T> {
+    fn match_args(matches: ArgMatches) -> Result<Box<Self>>;
+    fn match_trait(&self) -> Result<T>;
 }
 
 pub trait IConfigFile {

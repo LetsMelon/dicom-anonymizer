@@ -22,8 +22,8 @@ pub struct AnonymizerValues {
     pub(crate) dry_run: bool,
 }
 
-impl IMatcher<AnonymizerValues, AnonymizerMeta> for AnonymizerValues {
-    fn match_args(matches: ArgMatches) -> Result<AnonymizerValues> {
+impl IMatcher<AnonymizerMeta> for AnonymizerValues {
+    fn match_args(matches: ArgMatches) -> Result<Box<AnonymizerValues>> {
         let dry_run = match matches.value_of("dry_run") {
             None => false,
             Some(value) => value.parse().unwrap_or(false),
@@ -89,7 +89,7 @@ impl IMatcher<AnonymizerValues, AnonymizerMeta> for AnonymizerValues {
             }
         };
 
-        Ok(AnonymizerValues {
+        Ok(Box::from(AnonymizerValues {
             input,
             output,
             patient_name,
@@ -97,7 +97,7 @@ impl IMatcher<AnonymizerValues, AnonymizerMeta> for AnonymizerValues {
             patient_birth_day,
             remove_tags,
             dry_run,
-        })
+        }))
     }
 
     fn match_trait(&self) -> Result<AnonymizerMeta> {
