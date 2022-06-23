@@ -20,5 +20,5 @@ pub fn modify() -> StaticArg {
 
 #[inline(always)]
 pub fn read() -> StaticArg {
-    Arg::new("read").takes_value(false).short('r').long("read")
+    Arg::new("show").takes_value(false).short('s').long("show")
 }
