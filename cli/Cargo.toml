@@ -17,3 +17,4 @@ clap = { version = "3.1.18", features = ["derive"] }
 anyhow = "1.0.57"
 chrono = "0.4.19"
 yaml-rust = "0.4.5"
+strum = { version = "0.24", features = ["derive"] }

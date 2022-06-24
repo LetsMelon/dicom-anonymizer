@@ -2,6 +2,7 @@ use anonymizer_lib::PatientSex;
 use anyhow::Result;
 use dicom_core::value::DicomDateTime;
 use dicom_core::Tag;
+use std::fmt::Formatter;
 use std::str::FromStr;
 use yaml_rust::Yaml;
 
@@ -9,6 +10,7 @@ use crate::app::types::IConfigFile;
 use crate::app::utils::{parse_datetime_utc, parse_tag};
 use crate::generate_key;
 
+// TODO switch from core::Option to a self-made enum with None, Remove and Change (also in over cli!)
 #[derive(Default, Debug)]
 pub struct ConfigFileV1 {
     pub patient_name: Option<String>,
@@ -73,5 +75,14 @@ impl IConfigFile for ConfigFileV1 {
 
     fn get_version() -> String {
         "1.0".to_string()
+    }
+
+    fn pretty_print(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        // TODO make better and more beautiful
+        write!(f, "Patient:\n")?;
+        write!(f, "\tName: {:?}\n", self.patient_name)?;
+        write!(f, "\tBirthday: {:?}\n", self.patient_birth_day)?;
+        write!(f, "\tSex: {:?}\n", self.patient_sex)?;
+        write!(f, "\nRemove Tags: {:?}\n", self.remove_tags)
     }
 }

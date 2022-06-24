@@ -138,6 +138,7 @@ dependencies = [
  "chrono",
  "clap",
  "dicom-core",
+ "strum",
  "tags_list_lib",
  "yaml-rust",
 ]

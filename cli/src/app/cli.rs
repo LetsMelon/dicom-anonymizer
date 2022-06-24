@@ -2,9 +2,9 @@ use anyhow::Result;
 use clap::Command;
 use std::ffi::OsString;
 
-use crate::app::anonymizer;
 use crate::app::commands;
 use crate::app::types::StaticCommand;
+use crate::app::{anonymizer, config};
 
 #[derive(Debug)]
 pub struct App {}
@@ -28,8 +28,7 @@ impl App {
         match matches.subcommand_name() {
             None => (),
             Some("config") => {
-                println!("{:?}", matches);
-                todo!();
+                config::logic(matches)?;
             }
             Some("anonymizer") => {
                 anonymizer::logic(matches)?;
