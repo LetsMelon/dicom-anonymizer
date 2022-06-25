@@ -2,9 +2,9 @@ use anyhow::Result;
 use clap::Command;
 use std::ffi::OsString;
 
+use crate::app::anonymizer;
 use crate::app::args;
 use crate::app::types::StaticCommand;
-use crate::app::{anonymizer, config};
 
 #[derive(Debug)]
 pub struct App {}

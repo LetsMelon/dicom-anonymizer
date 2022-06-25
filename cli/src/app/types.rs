@@ -1,6 +1,5 @@
 use anyhow::Result;
 use clap::{Arg, ArgMatches, Command};
-use std::fmt::Formatter;
 use yaml_rust::Yaml;
 
 pub type StaticCommand = Command<'static>;

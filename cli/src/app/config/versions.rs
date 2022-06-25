@@ -2,7 +2,6 @@ use anonymizer_lib::PatientSex;
 use anyhow::Result;
 use dicom_core::value::DicomDateTime;
 use dicom_core::Tag;
-use std::fmt::Formatter;
 use std::str::FromStr;
 use yaml_rust::Yaml;
 
