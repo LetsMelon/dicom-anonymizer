@@ -35,11 +35,3 @@ impl ConfigFileVersions {
         }
     }
 }
-
-impl Display for ConfigFileVersions {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            ConfigFileVersions::V1_0(file) => file.pretty_print(f),
-        }
-    }
-}

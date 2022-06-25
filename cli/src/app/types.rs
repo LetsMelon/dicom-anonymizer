@@ -14,5 +14,4 @@ pub trait IMatcher<T> {
 pub trait IConfigFile {
     fn parse(content: Vec<Yaml>) -> Result<Box<Self>>;
     fn get_version() -> String;
-    fn pretty_print(&self, f: &mut Formatter<'_>) -> std::fmt::Result;
 }

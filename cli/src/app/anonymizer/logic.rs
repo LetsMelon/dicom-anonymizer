@@ -6,8 +6,7 @@ use crate::app::anonymizer::values::AnonymizerValues;
 use crate::app::types::IMatcher;
 
 pub fn logic(matches: ArgMatches) -> Result<()> {
-    let matches =
-        *AnonymizerValues::match_args(matches.subcommand_matches("anonymizer").unwrap().clone())?;
+    let matches = *AnonymizerValues::match_args(matches)?;
 
     let mut obj = Anonymizer::from_file(&matches.input.to_string_lossy())?;
     obj.meta(matches.match_trait()?);

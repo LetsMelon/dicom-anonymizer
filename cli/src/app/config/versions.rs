@@ -76,13 +76,4 @@ impl IConfigFile for ConfigFileV1 {
     fn get_version() -> String {
         "1.0".to_string()
     }
-
-    fn pretty_print(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        // TODO make better and more beautiful
-        write!(f, "Patient:\n")?;
-        write!(f, "\tName: {:?}\n", self.patient_name)?;
-        write!(f, "\tBirthday: {:?}\n", self.patient_birth_day)?;
-        write!(f, "\tSex: {:?}\n", self.patient_sex)?;
-        write!(f, "\nRemove Tags: {:?}\n", self.remove_tags)
-    }
 }

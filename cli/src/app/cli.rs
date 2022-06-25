@@ -2,7 +2,7 @@ use anyhow::Result;
 use clap::Command;
 use std::ffi::OsString;
 
-use crate::app::commands;
+use crate::app::args;
 use crate::app::types::StaticCommand;
 use crate::app::{anonymizer, config};
 
@@ -25,29 +25,19 @@ impl App {
         let app = Self::build_cli();
         let matches = app.get_matches_from(args);
 
-        match matches.subcommand_name() {
-            None => (),
-            Some("config") => {
-                config::logic(matches)?;
-            }
-            Some("anonymizer") => {
-                anonymizer::logic(matches)?;
-            }
-            item => unreachable!(
-                "Should be unreachable because clap checks it - ({})",
-                item.unwrap_or("UNKNOWN")
-            ),
-        }
+        anonymizer::logic(matches)?;
 
         Ok(())
     }
 
     fn build_cli() -> StaticCommand {
+        let args = args::anonymizer();
+
         Command::new("dicom-tools")
             .bin_name("dicom-tools")
             .version("0.1.0")
             .author("Domenic Melcher")
             .arg_required_else_help(true)
-            .subcommands([commands::anonymizer(), commands::config()])
+            .args(&args)
     }
 }
