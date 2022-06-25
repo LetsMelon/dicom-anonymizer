@@ -53,3 +53,4 @@ jobs:
     - name: Test
       run: |
         cargo test -p anonymizer_lib
+        cargo test -p cli
