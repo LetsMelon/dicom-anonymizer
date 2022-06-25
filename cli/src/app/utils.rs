@@ -33,10 +33,7 @@ pub fn is_dcm_path<P>(path: P) -> bool
 where
     P: AsRef<Path>,
 {
-    match path.as_ref().extension().map(|ext| ext.to_str()) {
-        Some(Some("dcm")) => true,
-        _ => false,
-    }
+    matches!(path.as_ref().extension().map(|ext| ext.to_str()), Some(Some("dcm")))
 }
 
 pub fn parse_date(value: &str) -> ParseResult<NaiveDate> {
@@ -60,4 +57,20 @@ pub fn parse_tag(value: &str) -> Result<Tag> {
     let element_number = u16::from_str_radix(splitted[1].trim_start_matches("0x"), 16)?;
 
     Ok(Tag(group_number, element_number))
+}
+
+#[cfg(test)]
+mod tests {
+    mod is_dcm_path {
+        use std::path::PathBuf;
+        use crate::app::utils::is_dcm_path;
+
+        #[test]
+        fn only_allow_paths_with_dcm_extension() {
+            assert!(is_dcm_path(PathBuf::from("/test.dcm")));
+            assert!(is_dcm_path(PathBuf::from("./test.dcm")));
+            assert!(!is_dcm_path(PathBuf::from("/test.jpg")));
+            assert!(!is_dcm_path(PathBuf::from("/test")));
+        }
+    }
 }
