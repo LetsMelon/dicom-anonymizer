@@ -2,8 +2,6 @@
 extern crate derive_builder;
 extern crate derive_more;
 
-#[macro_use]
-mod macros;
 mod anonymizer;
 mod dicom_date_time;
 mod enums;
