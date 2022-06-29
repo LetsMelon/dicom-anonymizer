@@ -76,3 +76,37 @@ impl From<Vec<TagsList>> for RemoveTagsInput {
         RemoveTagsInput::VecList(vt)
     }
 }
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+pub enum TagAction<T> {
+    /// Change the tag with the given value, similar to `Option::Some(T)`
+    Change(T),
+    /// Changes nothing, similar to `Option::None`
+    Keep,
+    /// Remove the tag
+    Remove,
+}
+
+impl<T> Default for TagAction<T> {
+    fn default() -> Self {
+        TagAction::Keep
+    }
+}
+
+impl<T> Into<Option<T>> for TagAction<T> {
+    fn into(self) -> Option<T> {
+        match self {
+            TagAction::Change(value) => Some(value),
+            _ => None,
+        }
+    }
+}
+
+impl<T> Into<TagAction<T>> for Option<T> {
+    fn into(self) -> TagAction<T> {
+        match self {
+            None => TagAction::Keep,
+            Some(value) => TagAction::Change(value),
+        }
+    }
+}
