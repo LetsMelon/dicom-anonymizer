@@ -1,10 +1,9 @@
 use anyhow::{anyhow, Result};
-use dicom_core::value::{DicomDateTime, Value, ValueType};
-use dicom_core::{dicom_value, DataElement, DicomValue, PrimitiveValue, Tag, VR};
+use dicom_core::value::DicomDateTime;
+use dicom_core::{DataElement, DicomValue, PrimitiveValue, Tag, VR};
 use dicom_dictionary_std::tags;
 use dicom_object::{open_file, DefaultDicomObject, InMemDicomObject};
 
-use crate::enums::PatientSex;
 use crate::file::AnonymizerFile;
 use crate::meta::{AnonymizerMeta, AnonymizerMetaBuilder};
 use crate::TagAction;
@@ -60,7 +59,7 @@ impl Anonymizer {
         match &self.file {
             Some(file) => {
                 if file.updated_obj {
-                    self.anonymize()
+                    self.anonymize()?;
                 }
                 self.file.as_ref().unwrap().obj.write_to_file(path)?;
                 Ok(())
@@ -98,7 +97,7 @@ impl Anonymizer {
         Ok(())
     }
 
-    pub fn anonymize(&mut self) {
+    pub fn anonymize(&mut self) -> Result<()> {
         println!("{:?}", self.meta);
 
         self.match_value(
@@ -106,7 +105,7 @@ impl Anonymizer {
             tags::PATIENT_NAME,
             VR::PN,
             |value| PrimitiveValue::Str(value.to_owned()),
-        );
+        )?;
 
         self.match_value(
             &self.meta.patient_birth_date.clone(),
@@ -116,7 +115,7 @@ impl Anonymizer {
                 let ddt = DicomDateTime::from(value.clone());
                 PrimitiveValue::from(ddt)
             },
-        );
+        )?;
 
         for item in &self.meta.remove_tags {
             self.file
@@ -131,6 +130,8 @@ impl Anonymizer {
             tags::PATIENT_SEX,
             VR::CS,
             |value| PrimitiveValue::Str(value.value().to_owned()),
-        );
+        )?;
+
+        Ok(())
     }
 }
