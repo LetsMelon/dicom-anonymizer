@@ -1,9 +1,8 @@
 use anyhow::{anyhow, Result};
-use dicom_core::value::ValueType;
-use dicom_core::value::ValueType::Tags;
-use dicom_core::{dicom_value, value::DicomDateTime, DataElement, Tag, VR};
+use dicom_core::value::{DicomDateTime, Value, ValueType};
+use dicom_core::{dicom_value, DataElement, DicomValue, PrimitiveValue, Tag, VR};
 use dicom_dictionary_std::tags;
-use dicom_object::{open_file, DefaultDicomObject};
+use dicom_object::{open_file, DefaultDicomObject, InMemDicomObject};
 
 use crate::enums::PatientSex;
 use crate::file::AnonymizerFile;
@@ -75,51 +74,48 @@ impl Anonymizer {
         item: &TagAction<T>,
         tag: Tag,
         vr: VR,
-        dicom_value_type: ValueType,
+        translate: fn(value: &T) -> PrimitiveValue,
     ) -> Result<()> {
         match item {
-            TagAction::Change(value) => self.file.as_mut()?.obj.put(DataElement::new(
-                tag,
-                vr,
-                dicom_value!(dicom_value_type, value),
-            ))?,
-            TagAction::Keep => (),
-            TagAction::Remove => todo!("Implement logic to delete a tag"),
-        }
-
-        Ok(())
-    }
-
-    fn match_value_patient_sex(&mut self, item: &TagAction<PatientSex>) -> Result<()> {
-        match item {
-            TagAction::Change(value) => self.file.as_mut()?.obj.put(DataElement::new(
-                tags::PATIENT_SEX,
-                VR::CS,
-                dicom_value!(ValueType::Str, value.value()),
-            ))?,
-            TagAction::Keep => (),
-            TagAction::Remove => todo!("Implement logic to delete a tag"),
+            TagAction::Change(value) => {
+                self.file
+                    .as_mut()
+                    .unwrap()
+                    .obj
+                    .put(DataElement::<InMemDicomObject, Vec<u8>>::new(
+                        tag,
+                        vr,
+                        DicomValue::from(translate(value)),
+                    ))
+                    .unwrap();
+            }
+            TagAction::Keep => {}
+            TagAction::Remove => {
+                todo!("Implement logic to delete a tag");
+            }
         }
 
         Ok(())
     }
 
     pub fn anonymize(&mut self) {
-        // let patient_name: InMemElement = ;
         println!("{:?}", self.meta);
 
         self.match_value(
-            &self.meta.patient_name,
+            &self.meta.patient_name.clone(),
             tags::PATIENT_NAME,
             VR::PN,
-            ValueType::Str,
+            |value| PrimitiveValue::Str(value.to_owned()),
         );
 
         self.match_value(
-            &self.meta.patient_birth_date,
+            &self.meta.patient_birth_date.clone(),
             tags::PATIENT_BIRTH_DATE,
             VR::DA,
-            ValueType::DateTime,
+            |value| {
+                let ddt = DicomDateTime::from(value.clone());
+                PrimitiveValue::from(ddt)
+            },
         );
 
         for item in &self.meta.remove_tags {
@@ -131,10 +127,10 @@ impl Anonymizer {
         }
 
         self.match_value(
-            &self.meta.patient_sex,
+            &self.meta.patient_sex.clone(),
             tags::PATIENT_SEX,
             VR::CS,
-            ValueType::Str,
+            |value| PrimitiveValue::Str(value.value().to_owned()),
         );
     }
 }
