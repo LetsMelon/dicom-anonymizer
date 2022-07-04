@@ -65,25 +65,57 @@ impl IMatcher<AnonymizerMeta> for AnonymizerValues {
 
                 match cfv {
                     ConfigFileVersions::V1_0(data) => {
-                        if patient_name == None {
-                            patient_name = data.patient_name.into();
-                        }
-
-                        if patient_birth_day == None {
-                            patient_birth_day = data.patient_birth_day.into();
-                        }
-
-                        if patient_sex == None {
-                            patient_sex = data.patient_sex.into();
-                        }
-
-                        match (&mut remove_tags, data.remove_tags) {
-                            (None, Some(data)) => remove_tags = data,
-                            (_, None) => (),
-                            (Some(old_data), Some(config_data)) => {
-                                old_data.extend(config_data);
+                        match patient_name {
+                            TagAction::Change(data) => {
+                                patient_name = TagAction::Change(data);
                             }
+                            _ => (),
                         }
+
+                        match patient_birth_day {
+                            TagAction::Change(data) => {
+                                patient_birth_day = TagAction::Change(data);
+                            }
+                            _ => (),
+                        }
+
+                        match patient_sex {
+                            TagAction::Change(data) => {
+                                patient_sex = TagAction::Change(data);
+                            }
+                            _ => (),
+                        }
+
+                        match data.remove_tags {
+                            None => (),
+                            Some(data) => {
+                                remove_tags.extend(data);
+                            }
+                        };
+                    }
+                    ConfigFileVersions::V1_1(data) => {
+                        match patient_name {
+                            TagAction::Change(data) => {
+                                patient_name = TagAction::Change(data);
+                            }
+                            _ => (),
+                        }
+
+                        match patient_birth_day {
+                            TagAction::Change(data) => {
+                                patient_birth_day = TagAction::Change(data);
+                            }
+                            _ => (),
+                        }
+
+                        match patient_sex {
+                            TagAction::Change(data) => {
+                                patient_sex = TagAction::Change(data);
+                            }
+                            _ => (),
+                        }
+
+                        remove_tags.extend(data.remove_tags);
                     }
                 }
             }
@@ -103,24 +135,13 @@ impl IMatcher<AnonymizerMeta> for AnonymizerValues {
     fn match_trait(&self) -> Result<AnonymizerMeta> {
         let mut builder = Anonymizer::meta_builder();
 
-        builder.patient_name(&self.patient_name);
-
-        match &self.patient_sex {
-            Some(ps) => {
-                builder.patient_sex(ps.to_owned());
-            }
-            None => (),
-        };
-
-        let cddt = CustomDicomDateTime::from(self.patient_birth_day.to_owned());
-
-        match &self.patient_birth_day {
-            Some(pbd) => {
-                builder.patient_birth_date(CustomDicomDateTime::from(pbd.to_owned()));
-            }
-            None => (),
-        };
-
+        builder.patient_name(self.patient_name.clone());
+        builder.patient_sex(self.patient_sex.clone());
+        let cddt_tag_action = self
+            .patient_birth_day
+            .clone()
+            .map(|value| CustomDicomDateTime::from(value));
+        builder.patient_birth_date(cddt_tag_action);
         builder.remove_tags(self.remove_tags.to_owned().into());
 
         Ok(builder.build()?)

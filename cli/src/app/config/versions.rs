@@ -10,25 +10,28 @@ use crate::app::types::IConfigFile;
 use crate::app::utils::{parse_datetime_utc, parse_tag};
 use crate::generate_key;
 
-fn transform_content(content: Vec<Yaml>) -> Result<&'static Hash> {
-    let content = content
+fn transform_content(content: Vec<Yaml>) -> Result<Hash> {
+    let first_element = content
         .get(0)
         .expect("Can't get first element in yaml-tree");
-    let content = match content {
-        Yaml::Hash(value) => Some(value),
-        _ => None,
-    }
-    .expect("Should be a hash");
-    let content = content
-        .get(&Yaml::String("config".to_string()))
-        .expect("Should have a config entry");
-    let content = match content {
+
+    let yaml_hash = match first_element {
         Yaml::Hash(value) => Some(value),
         _ => None,
     }
     .expect("Should be a hash");
 
-    Ok(content)
+    let config_entry = yaml_hash
+        .get(&Yaml::String("config".to_string()))
+        .expect("Should have a config entry");
+
+    let config_hash = match config_entry {
+        Yaml::Hash(value) => Some(value),
+        _ => None,
+    }
+    .expect("Should be a hash");
+
+    Ok(config_hash.clone())
 }
 
 #[derive(Default, Debug)]
