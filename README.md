@@ -3,16 +3,21 @@
 CLI program written in Rust to anonymize DICOM files
 
 ```
-anonymizer 0.1.0
+$ dicom-tools --help
+
+dicom-tools 0.1.0
 Domenic Melcher
 
 USAGE:
-    anonymizer [OPTIONS] <FILE>
+    dicom-tools [OPTIONS] <FILE>
 
 ARGS:
     <FILE>    DICOM file to anonymize
 
 OPTIONS:
+    -c, --config <config>
+            Custom config yaml-file with presets
+
     -d, --dry-run
             If set then the file will not be saved
 

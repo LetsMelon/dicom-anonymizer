@@ -7,7 +7,7 @@ use tags_list_lib::List as TagsList;
 
 use crate::tag::CustomTag;
 
-#[derive(Display, Copy, Clone, Debug, EnumCount, Serialize, Deserialize)]
+#[derive(Display, Copy, Clone, Debug, EnumCount, Serialize, Deserialize, Eq, PartialEq)]
 pub enum PatientSex {
     M,
     F,
@@ -74,5 +74,55 @@ impl From<TagsList> for RemoveTagsInput {
 impl From<Vec<TagsList>> for RemoveTagsInput {
     fn from(vt: Vec<TagsList>) -> Self {
         RemoveTagsInput::VecList(vt)
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+pub enum TagAction<T> {
+    /// Change the tag with the given value, similar to `Option::Some(T)`
+    Change(T),
+    /// Changes nothing, similar to `Option::None`
+    Keep,
+    /// Remove the tag
+    Remove,
+}
+
+impl<T> TagAction<T> {
+    /// Maps an `TagAction::Change<T>` to `Option<U>` by applying a function to a contained value.
+    /// Copied from https://doc.rust-lang.org/std/option/enum.Option.html#method.map
+    #[inline]
+    pub fn map<U, F>(self, f: F) -> TagAction<U>
+    where
+        F: FnOnce(T) -> U,
+    {
+        match self {
+            TagAction::Change(v) => TagAction::Change(f(v)),
+            TagAction::Keep => TagAction::Keep,
+            TagAction::Remove => TagAction::Remove,
+        }
+    }
+}
+
+impl<T> Default for TagAction<T> {
+    fn default() -> Self {
+        TagAction::Keep
+    }
+}
+
+impl<T> Into<Option<T>> for TagAction<T> {
+    fn into(self) -> Option<T> {
+        match self {
+            TagAction::Change(value) => Some(value),
+            _ => None,
+        }
+    }
+}
+
+impl<T> Into<TagAction<T>> for Option<T> {
+    fn into(self) -> TagAction<T> {
+        match self {
+            None => TagAction::Keep,
+            Some(value) => TagAction::Change(value),
+        }
     }
 }

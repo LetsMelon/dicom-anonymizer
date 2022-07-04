@@ -3,21 +3,22 @@ use serde::{Deserialize, Serialize};
 use crate::dicom_date_time::CustomDicomDateTime;
 use crate::enums::{PatientSex, RemoveTagsInput};
 use crate::tag::CustomTag;
+use crate::TagAction;
 
 #[derive(Debug, Builder, Clone, Serialize, Deserialize)]
 #[builder(derive(Debug))]
 pub struct AnonymizerMeta {
     #[builder(setter(into, strip_option), default)]
-    pub(crate) patient_name: Option<String>,
+    pub(crate) patient_name: TagAction<String>,
 
     #[builder(setter(into, strip_option), default)]
-    pub(crate) patient_birth_date: Option<CustomDicomDateTime>,
+    pub(crate) patient_birth_date: TagAction<CustomDicomDateTime>,
 
     #[builder(setter(custom, into, strip_option), default)]
     pub(crate) remove_tags: Vec<CustomTag>,
 
     #[builder(setter(into, strip_option), default)]
-    pub(crate) patient_sex: Option<PatientSex>,
+    pub(crate) patient_sex: TagAction<PatientSex>,
 }
 
 impl AnonymizerMetaBuilder {

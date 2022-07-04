@@ -1,11 +1,12 @@
 use anyhow::{anyhow, Result};
-use dicom_core::{dicom_value, value::DicomDateTime, DataElement, Tag, VR};
+use dicom_core::value::DicomDateTime;
+use dicom_core::{DataElement, DicomValue, PrimitiveValue, Tag, VR};
 use dicom_dictionary_std::tags;
-use dicom_object::{open_file, DefaultDicomObject};
+use dicom_object::{open_file, DefaultDicomObject, InMemDicomObject};
 
-use crate::enums::PatientSex;
 use crate::file::AnonymizerFile;
 use crate::meta::{AnonymizerMeta, AnonymizerMetaBuilder};
+use crate::TagAction;
 
 #[derive(Debug, Clone)]
 pub struct Anonymizer {
@@ -58,7 +59,7 @@ impl Anonymizer {
         match &self.file {
             Some(file) => {
                 if file.updated_obj {
-                    self.anonymize()
+                    self.anonymize()?;
                 }
                 self.file.as_ref().unwrap().obj.write_to_file(path)?;
                 Ok(())
@@ -67,35 +68,54 @@ impl Anonymizer {
         }
     }
 
-    pub fn anonymize(&mut self) {
-        // let patient_name: InMemElement = ;
+    fn match_value<T>(
+        &mut self,
+        item: &TagAction<T>,
+        tag: Tag,
+        vr: VR,
+        translate: fn(value: &T) -> PrimitiveValue,
+    ) -> Result<()> {
+        match item {
+            TagAction::Change(value) => {
+                self.file
+                    .as_mut()
+                    .unwrap()
+                    .obj
+                    .put(DataElement::<InMemDicomObject, Vec<u8>>::new(
+                        tag,
+                        vr,
+                        DicomValue::from(translate(value)),
+                    ))
+                    .unwrap();
+            }
+            TagAction::Keep => {}
+            TagAction::Remove => {
+                todo!("Implement logic to delete a tag");
+            }
+        }
+
+        Ok(())
+    }
+
+    pub fn anonymize(&mut self) -> Result<()> {
         println!("{:?}", self.meta);
 
-        match_field!(
-            &self.meta.patient_name,
-            (|v: &str| {
-                self.file.as_mut().unwrap().obj.put(DataElement::new(
-                    tags::PATIENT_NAME,
-                    VR::PN,
-                    dicom_value!(Str, v),
-                ));
-            })
-        );
+        self.match_value(
+            &self.meta.patient_name.clone(),
+            tags::PATIENT_NAME,
+            VR::PN,
+            |value| PrimitiveValue::Str(value.to_owned()),
+        )?;
 
-        match_field!(
-            &self
-                .meta
-                .patient_birth_date
-                .as_ref()
-                .map(|v| DicomDateTime::from(v.clone())),
-            (|v: &DicomDateTime| {
-                self.file.as_mut().unwrap().obj.put(DataElement::new(
-                    tags::PATIENT_BIRTH_DATE,
-                    VR::DA,
-                    dicom_value!(DateTime, *v),
-                ));
-            })
-        );
+        self.match_value(
+            &self.meta.patient_birth_date.clone(),
+            tags::PATIENT_BIRTH_DATE,
+            VR::DA,
+            |value| {
+                let ddt = DicomDateTime::from(value.clone());
+                PrimitiveValue::from(ddt)
+            },
+        )?;
 
         for item in &self.meta.remove_tags {
             self.file
@@ -105,15 +125,13 @@ impl Anonymizer {
                 .remove_element(Tag::from(item.clone()));
         }
 
-        match_field!(
-            &self.meta.patient_sex,
-            (|v: &PatientSex| {
-                self.file.as_mut().unwrap().obj.put(DataElement::new(
-                    tags::PATIENT_SEX,
-                    VR::CS,
-                    dicom_value!(Str, v.value()),
-                ));
-            })
-        );
+        self.match_value(
+            &self.meta.patient_sex.clone(),
+            tags::PATIENT_SEX,
+            VR::CS,
+            |value| PrimitiveValue::Str(value.value().to_owned()),
+        )?;
+
+        Ok(())
     }
 }
