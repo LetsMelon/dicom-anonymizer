@@ -88,18 +88,18 @@ pub enum TagAction<T> {
     Remove,
 }
 
-
-impl TagAction<T> {
+impl<T> TagAction<T> {
     /// Maps an `TagAction::Change<T>` to `Option<U>` by applying a function to a contained value.
+    /// Copied from https://doc.rust-lang.org/std/option/enum.Option.html#method.map
     #[inline]
-    pub const fn map<U, F>(self, f: F) -> Option<U>
-        where
-            F: ~const FnOnce(T) -> U,
-            F: ~const Destruct,
+    pub fn map<U, F>(self, f: F) -> TagAction<U>
+    where
+        F: FnOnce(T) -> U,
     {
         match self {
-            Some(x) => Some(f(x)),
-            None => None,
+            TagAction::Change(v) => TagAction::Change(f(v)),
+            TagAction::Keep => TagAction::Keep,
+            TagAction::Remove => TagAction::Remove,
         }
     }
 }
