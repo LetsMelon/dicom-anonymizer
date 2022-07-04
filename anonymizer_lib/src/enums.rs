@@ -1,6 +1,7 @@
 use derive_more::Display;
 use dicom_core::Tag;
 use serde::{Deserialize, Serialize};
+use std::marker::Destruct;
 use std::str::FromStr;
 use strum::EnumCount;
 use tags_list_lib::List as TagsList;
@@ -85,6 +86,22 @@ pub enum TagAction<T> {
     Keep,
     /// Remove the tag
     Remove,
+}
+
+
+impl TagAction<T> {
+    /// Maps an `TagAction::Change<T>` to `Option<U>` by applying a function to a contained value.
+    #[inline]
+    pub const fn map<U, F>(self, f: F) -> Option<U>
+        where
+            F: ~const FnOnce(T) -> U,
+            F: ~const Destruct,
+    {
+        match self {
+            Some(x) => Some(f(x)),
+            None => None,
+        }
+    }
 }
 
 impl<T> Default for TagAction<T> {

@@ -1,6 +1,6 @@
 use crate::app::config::ConfigFileVersions;
 use anonymizer_lib::types::CustomDicomDateTime;
-use anonymizer_lib::{Anonymizer, AnonymizerMeta, PatientSex};
+use anonymizer_lib::{Anonymizer, AnonymizerMeta, PatientSex, TagAction};
 use anyhow::Result;
 use clap::ArgMatches;
 use dicom_core::value::DicomDateTime;
@@ -15,10 +15,10 @@ use crate::app::utils::{parse_datetime_utc, parse_tag};
 pub struct AnonymizerValues {
     pub(crate) input: PathBuf,
     pub(crate) output: Option<PathBuf>,
-    pub(crate) patient_name: Option<String>,
-    pub(crate) patient_sex: Option<PatientSex>,
-    pub(crate) patient_birth_day: Option<DicomDateTime>,
-    pub(crate) remove_tags: Option<Vec<Tag>>,
+    pub(crate) patient_name: TagAction<String>,
+    pub(crate) patient_sex: TagAction<PatientSex>,
+    pub(crate) patient_birth_day: TagAction<DicomDateTime>,
+    pub(crate) remove_tags: Vec<Tag>,
     pub(crate) dry_run: bool,
 }
 
@@ -32,27 +32,27 @@ impl IMatcher<AnonymizerMeta> for AnonymizerValues {
         let input = PathBuf::from(matches.value_of("input").unwrap());
         let output = matches.value_of("output").map(PathBuf::from);
 
-        let mut patient_name = matches.value_of("patient_name").map(str::to_string);
+        let mut patient_name = matches.value_of("patient_name").map(str::to_string).into();
         let mut patient_sex = match matches.value_of("patient_sex") {
-            None => None,
-            Some(v) => Some(PatientSex::from_str(v)?),
+            None => TagAction::Keep,
+            Some(v) => TagAction::Change(PatientSex::from_str(v)?),
         };
         let mut patient_birth_day = match matches.value_of("patient_birth_day") {
-            None => None,
+            None => TagAction::Keep,
             Some(pbd) => {
                 let dt_offset = parse_datetime_utc(pbd)?;
-                Some(DicomDateTime::try_from(&dt_offset)?)
+                TagAction::Change(DicomDateTime::try_from(&dt_offset)?)
             }
         };
         let mut remove_tags = match matches.values_of("remove_tags") {
-            None => None,
+            None => Vec::new(),
             Some(rt) => {
                 let mut remove_tags = Vec::<Tag>::new();
                 for item in rt {
                     remove_tags.push(parse_tag(item)?);
                 }
 
-                Some(remove_tags)
+                remove_tags
             }
         };
 
@@ -66,19 +66,19 @@ impl IMatcher<AnonymizerMeta> for AnonymizerValues {
                 match cfv {
                     ConfigFileVersions::V1_0(data) => {
                         if patient_name == None {
-                            patient_name = data.patient_name;
+                            patient_name = data.patient_name.into();
                         }
 
                         if patient_birth_day == None {
-                            patient_birth_day = data.patient_birth_day;
+                            patient_birth_day = data.patient_birth_day.into();
                         }
 
                         if patient_sex == None {
-                            patient_sex = data.patient_sex;
+                            patient_sex = data.patient_sex.into();
                         }
 
                         match (&mut remove_tags, data.remove_tags) {
-                            (None, Some(data)) => remove_tags = Some(data),
+                            (None, Some(data)) => remove_tags = data,
                             (_, None) => (),
                             (Some(old_data), Some(config_data)) => {
                                 old_data.extend(config_data);
@@ -103,12 +103,7 @@ impl IMatcher<AnonymizerMeta> for AnonymizerValues {
     fn match_trait(&self) -> Result<AnonymizerMeta> {
         let mut builder = Anonymizer::meta_builder();
 
-        match &self.patient_name {
-            Some(v) => {
-                builder.patient_name(v);
-            }
-            None => (),
-        }
+        builder.patient_name(&self.patient_name);
 
         match &self.patient_sex {
             Some(ps) => {
@@ -117,6 +112,8 @@ impl IMatcher<AnonymizerMeta> for AnonymizerValues {
             None => (),
         };
 
+        let cddt = CustomDicomDateTime::from(self.patient_birth_day.to_owned());
+
         match &self.patient_birth_day {
             Some(pbd) => {
                 builder.patient_birth_date(CustomDicomDateTime::from(pbd.to_owned()));
@@ -124,12 +121,7 @@ impl IMatcher<AnonymizerMeta> for AnonymizerValues {
             None => (),
         };
 
-        match &self.remove_tags {
-            Some(tags) => {
-                builder.remove_tags(tags.to_owned().into());
-            }
-            None => (),
-        };
+        builder.remove_tags(self.remove_tags.to_owned().into());
 
         Ok(builder.build()?)
     }
