@@ -96,7 +96,7 @@ mod tests {
 
     mod parse_date {
         use crate::app::utils::parse_date;
-        use chrono::{NaiveDate, ParseResult};
+        use chrono::NaiveDate;
 
         #[test]
         fn only_parse_dates_ymd_format() {
@@ -110,7 +110,7 @@ mod tests {
             };
 
             match parse_date("2022-15-03") {
-                Ok(value) => {
+                Ok(_) => {
                     assert!(false);
                 }
                 Err(_) => {
@@ -122,7 +122,7 @@ mod tests {
 
     mod parse_datetime {
         use crate::app::utils::parse_datetime;
-        use chrono::{NaiveDate, NaiveTime, ParseResult};
+        use chrono::{NaiveDate, NaiveTime};
 
         #[test]
         fn only_parse_dates_ymd_format() {

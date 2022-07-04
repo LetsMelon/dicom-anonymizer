@@ -1,7 +1,6 @@
 use derive_more::Display;
 use dicom_core::Tag;
 use serde::{Deserialize, Serialize};
-use std::marker::Destruct;
 use std::str::FromStr;
 use strum::EnumCount;
 use tags_list_lib::List as TagsList;

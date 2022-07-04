@@ -11,7 +11,7 @@ pub fn logic(matches: ArgMatches) -> Result<()> {
     let mut obj = Anonymizer::from_file(&matches.input.to_string_lossy())?;
     obj.meta(matches.match_trait()?);
 
-    obj.anonymize();
+    obj.anonymize()?;
 
     match (matches.output, matches.dry_run) {
         (_, true) => (),
