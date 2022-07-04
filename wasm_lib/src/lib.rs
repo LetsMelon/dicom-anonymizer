@@ -1,8 +1,8 @@
-use std::io::Cursor;
 use anonymizer_lib::{Anonymizer, AnonymizerMeta};
 use dicom_object::from_reader;
 use js_sys::Uint8Array;
 use once_cell::sync::OnceCell;
+use std::io::Cursor;
 use wasm_bindgen::prelude::*;
 
 static ANONYMIZER: OnceCell<Anonymizer> = OnceCell::new();

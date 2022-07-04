@@ -1,3 +1,4 @@
+#![feature(const_trait_impl)]
 #[macro_use]
 extern crate derive_builder;
 extern crate derive_more;

@@ -1,6 +1,7 @@
 use derive_more::Display;
 use dicom_core::Tag;
 use serde::{Deserialize, Serialize};
+use std::marker::Destruct;
 use std::str::FromStr;
 use strum::EnumCount;
 use tags_list_lib::List as TagsList;
@@ -85,6 +86,22 @@ pub enum TagAction<T> {
     Keep,
     /// Remove the tag
     Remove,
+}
+
+impl<T> TagAction<T> {
+    /// Maps an `TagAction::Change<T>` to `Option<U>` by applying a function to a contained value.
+    /// Copied from https://doc.rust-lang.org/std/option/enum.Option.html#method.map
+    #[inline]
+    pub fn map<U, F>(self, f: F) -> TagAction<U>
+    where
+        F: FnOnce(T) -> U,
+    {
+        match self {
+            TagAction::Change(v) => TagAction::Change(f(v)),
+            TagAction::Keep => TagAction::Keep,
+            TagAction::Remove => TagAction::Remove,
+        }
+    }
 }
 
 impl<T> Default for TagAction<T> {
