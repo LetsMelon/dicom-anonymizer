@@ -4,11 +4,13 @@ on:
   push:
     paths:
       - '**.rs'
+      - '**.snap'
       - '**Cargo.**'
       - '.github/workflows/ci.yml'
   pull_request:
     paths:
       - '**.rs'
+      - '**.snap'
       - '**Cargo.**'
       - '.github/workflows/ci.yml'
 

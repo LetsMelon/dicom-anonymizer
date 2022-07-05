@@ -1,0 +1,10 @@
+---
+source: anonymizer_lib/src/meta.rs
+expression: am
+---
+{
+  "patient_name": "Keep",
+  "patient_birth_date": "Keep",
+  "remove_tags": [],
+  "patient_sex": "Keep"
+}

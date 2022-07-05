@@ -1,0 +1,23 @@
+---
+source: anonymizer_lib/src/meta.rs
+expression: am
+---
+{
+  "patient_name": {
+    "Change": "New Patient Name"
+  },
+  "patient_birth_date": {
+    "Change": {
+      "data": "2016-08-12 +00:00"
+    }
+  },
+  "remove_tags": [
+    {
+      "group": 0,
+      "element": 0
+    }
+  ],
+  "patient_sex": {
+    "Change": "O"
+  }
+}

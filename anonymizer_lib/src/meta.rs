@@ -4,7 +4,7 @@ use crate::enums::{PatientSex, RemoveTagsInput};
 use crate::types::{CustomDicomDateTime, CustomTag};
 use crate::TagAction;
 
-#[derive(Debug, Builder, Clone, Serialize, Deserialize)]
+#[derive(Debug, Builder, Clone, Serialize, Deserialize, Eq, PartialEq)]
 #[builder(derive(Debug))]
 pub struct AnonymizerMeta {
     #[builder(setter(into, strip_option), default)]
@@ -52,5 +52,60 @@ impl AnonymizerMetaBuilder {
         }
 
         obj
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    mod serialize {
+        use crate::types::{CustomDicomDateTime, CustomTag};
+        use crate::{AnonymizerMeta, PatientSex, TagAction};
+        use chrono::FixedOffset;
+        use dicom_core::value::{DicomDate, DicomDateTime};
+
+        #[test]
+        fn default() {
+            let am = AnonymizerMeta {
+                patient_name: TagAction::default(),
+                patient_birth_date: TagAction::default(),
+                remove_tags: vec![],
+                patient_sex: TagAction::default(),
+            };
+            insta::assert_json_snapshot!(am);
+        }
+
+        #[test]
+        fn basic_values() {
+            let am = AnonymizerMeta {
+                patient_name: TagAction::Remove,
+                patient_birth_date: TagAction::Keep,
+                remove_tags: vec![CustomTag {
+                    group: 0,
+                    element: 0,
+                }],
+                patient_sex: TagAction::Remove,
+            };
+            insta::assert_json_snapshot!(am);
+        }
+
+        #[test]
+        fn complex_values() {
+            let am = AnonymizerMeta {
+                patient_name: TagAction::Change("New Patient Name".to_string()),
+                patient_birth_date: TagAction::Change(CustomDicomDateTime::new(
+                    DicomDateTime::from_date(
+                        DicomDate::from_ymd(2016, 8, 12).unwrap(),
+                        FixedOffset::east(0),
+                    ),
+                )),
+                remove_tags: vec![CustomTag {
+                    group: 0,
+                    element: 0,
+                }],
+                patient_sex: TagAction::Change(PatientSex::O),
+            };
+            insta::assert_json_snapshot!(am);
+        }
     }
 }
