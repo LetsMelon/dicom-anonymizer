@@ -109,20 +109,71 @@ impl<T> Default for TagAction<T> {
     }
 }
 
-impl<T> Into<Option<T>> for TagAction<T> {
-    fn into(self) -> Option<T> {
-        match self {
-            TagAction::Change(value) => Some(value),
-            _ => None,
+impl<T> From<Option<T>> for TagAction<T> {
+    fn from(opt: Option<T>) -> Self {
+        match opt {
+            None => TagAction::default(),
+            Some(value) => TagAction::Change(value),
         }
     }
 }
 
-impl<T> Into<TagAction<T>> for Option<T> {
-    fn into(self) -> TagAction<T> {
-        match self {
-            None => TagAction::Keep,
-            Some(value) => TagAction::Change(value),
+impl<T> From<TagAction<T>> for Option<T> {
+    fn from(tag_action: TagAction<T>) -> Self {
+        match tag_action {
+            TagAction::Change(value) => Option::Some(value),
+            TagAction::Keep => Option::None,
+            TagAction::Remove => Option::None,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    mod tag_action {
+        use crate::TagAction;
+
+        #[test]
+        fn has_option_map_like_function() {
+            assert_eq!(
+                TagAction::Change("MyString"),
+                TagAction::Change(1).map(|_| "MyString")
+            );
+            assert_eq!(
+                TagAction::Change("MyString"),
+                TagAction::Change(Option::Some("MyString")).map(|value| value.unwrap())
+            );
+            assert_ne!(
+                TagAction::Change("MyString"),
+                TagAction::Keep.map(|_: String| "MyString")
+            );
+        }
+
+        #[test]
+        fn can_be_transformed_into_an_option_and_back() {
+            type T = usize;
+
+            assert_eq!(
+                Option::Some("MyString"),
+                Option::from(TagAction::Change("MyString")),
+            );
+            assert_eq!(
+                Option::<T>::None,
+                Option::from(TagAction::<T>::Keep),
+            );
+            assert_eq!(
+                Option::<T>::None,
+                Option::from(TagAction::<T>::Remove),
+            );
+
+            assert_eq!(
+                TagAction::Change(1),
+                TagAction::from(Option::Some(1)),
+            );
+            assert_eq!(
+                TagAction::<T>::Keep,
+                TagAction::from(Option::<T>::None),
+            );
         }
     }
 }
