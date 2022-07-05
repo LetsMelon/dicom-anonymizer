@@ -172,6 +172,8 @@ impl PartialEq<DicomDateTime> for CustomDicomDateTime {
     }
 }
 
+impl Eq for CustomDicomDateTime {}
+
 impl PartialEq<CustomDicomDateTime> for DicomDateTime {
     fn eq(&self, other: &CustomDicomDateTime) -> bool {
         other.eq(self)
