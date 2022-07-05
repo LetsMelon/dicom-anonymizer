@@ -85,4 +85,44 @@ mod tests {
         assert_eq!(TagAction::Change(1), TagAction::from(Option::Some(1)),);
         assert_eq!(TagAction::<T>::Keep, TagAction::from(Option::<T>::None),);
     }
+
+    #[test]
+    fn can_be_serialized() {
+        type T = usize;
+
+        assert_eq!(
+            serde_json::to_string(&TagAction::<T>::Keep).unwrap(),
+            "\"Keep\""
+        );
+
+        assert_eq!(
+            serde_json::to_string(&TagAction::<T>::Remove).unwrap(),
+            "\"Remove\""
+        );
+
+        assert_eq!(
+            serde_json::to_string(&TagAction::Change(1)).unwrap(),
+            "{\"Change\":1}"
+        );
+    }
+
+    #[test]
+    fn can_be_deserialized() {
+        type T = (usize, usize);
+
+        assert_eq!(
+            TagAction::<T>::Keep,
+            serde_json::from_str::<TagAction<T>>("\"Keep\"").unwrap()
+        );
+
+        assert_eq!(
+            TagAction::<T>::Remove,
+            serde_json::from_str::<TagAction<T>>("\"Remove\"").unwrap()
+        );
+
+        assert_eq!(
+            TagAction::<T>::Change((0x1000, 0x0020)),
+            serde_json::from_str::<TagAction<T>>("{\"Change\":[4096,32]}").unwrap()
+        );
+    }
 }
