@@ -1,8 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use crate::dicom_date_time::CustomDicomDateTime;
 use crate::enums::{PatientSex, RemoveTagsInput};
-use crate::tag::CustomTag;
+use crate::types::{CustomDicomDateTime, CustomTag};
 use crate::TagAction;
 
 #[derive(Debug, Builder, Clone, Serialize, Deserialize)]

@@ -180,11 +180,12 @@ impl PartialEq<CustomDicomDateTime> for DicomDateTime {
 
 #[cfg(test)]
 mod tests {
-    use crate::dicom_date_time::CustomDicomDateTime;
     use chrono::FixedOffset;
     use dicom_core::value::{DicomDate, DicomDateTime, DicomTime};
     use serde_json::from_str;
     use std::error::Error;
+
+    use super::CustomDicomDateTime;
 
     impl CustomDicomDateTime {
         fn factory_ddt() -> Result<DicomDateTime, Box<dyn Error>> {

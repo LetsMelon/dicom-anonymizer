@@ -5,7 +5,7 @@ use std::str::FromStr;
 use strum::EnumCount;
 use tags_list_lib::List as TagsList;
 
-use crate::tag::CustomTag;
+use crate::types::CustomTag;
 
 #[derive(Display, Copy, Clone, Debug, EnumCount, Serialize, Deserialize, Eq, PartialEq)]
 pub enum PatientSex {
