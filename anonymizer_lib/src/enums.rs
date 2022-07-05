@@ -130,6 +130,41 @@ impl<T> From<TagAction<T>> for Option<T> {
 
 #[cfg(test)]
 mod tests {
+    mod patient_sex {
+        use crate::PatientSex;
+        use strum::EnumCount;
+
+        mod from_str {
+            use crate::PatientSex;
+            use std::str::FromStr;
+
+            #[test]
+            fn ok() {
+                assert_eq!(PatientSex::M, PatientSex::from_str("M").unwrap());
+                assert_eq!(PatientSex::F, PatientSex::from_str("F").unwrap());
+                assert_eq!(PatientSex::O, PatientSex::from_str("O").unwrap());
+                assert_eq!(PatientSex::M, PatientSex::from_str("m").unwrap());
+                assert_eq!(PatientSex::F, PatientSex::from_str("f").unwrap());
+                assert_eq!(PatientSex::O, PatientSex::from_str("o").unwrap());
+            }
+
+            #[test]
+            fn error() {
+                let ps = PatientSex::from_str("MM");
+
+                match ps {
+                    Ok(_) => assert!(false, "Should throw an error"),
+                    Err(_) => assert!(true),
+                };
+            }
+        }
+
+        #[test]
+        fn enum_count() {
+            assert_eq!(PatientSex::COUNT, 3);
+        }
+    }
+
     mod tag_action {
         use crate::TagAction;
 
@@ -157,23 +192,11 @@ mod tests {
                 Option::Some("MyString"),
                 Option::from(TagAction::Change("MyString")),
             );
-            assert_eq!(
-                Option::<T>::None,
-                Option::from(TagAction::<T>::Keep),
-            );
-            assert_eq!(
-                Option::<T>::None,
-                Option::from(TagAction::<T>::Remove),
-            );
+            assert_eq!(Option::<T>::None, Option::from(TagAction::<T>::Keep),);
+            assert_eq!(Option::<T>::None, Option::from(TagAction::<T>::Remove),);
 
-            assert_eq!(
-                TagAction::Change(1),
-                TagAction::from(Option::Some(1)),
-            );
-            assert_eq!(
-                TagAction::<T>::Keep,
-                TagAction::from(Option::<T>::None),
-            );
+            assert_eq!(TagAction::Change(1), TagAction::from(Option::Some(1)),);
+            assert_eq!(TagAction::<T>::Keep, TagAction::from(Option::<T>::None),);
         }
     }
 }

@@ -99,23 +99,22 @@ impl IConfigFile for ConfigFileV1_1 {
         let content = transform_content(content)?;
 
         // TODO add more logic for CHANGE, KEEP and REMOVE
-        let patient_name = TagAction::from(content
-            .get(generate_key!("patient_name"))
-            .map(|v| v.as_str().expect("Has to be a string").to_string()));
-        let patient_birth_day = TagAction::from(content
-            .get(generate_key!("patient_birth_day"))
-            .map(|v| {
+        let patient_name = TagAction::from(
+            content
+                .get(generate_key!("patient_name"))
+                .map(|v| v.as_str().expect("Has to be a string").to_string()),
+        );
+        let patient_birth_day =
+            TagAction::from(content.get(generate_key!("patient_birth_day")).map(|v| {
                 let date_raw = v.as_str().expect("Has to be a string");
                 let dt_offset =
                     parse_datetime_utc(date_raw).expect("Error while parsing birth day");
                 DicomDateTime::try_from(&dt_offset).expect("Transform into DicomDateTime")
             }));
-        let patient_sex = TagAction::from(content
-            .get(generate_key!("patient_sex"))
-            .map(|v| {
-                PatientSex::from_str(v.as_str().expect("Has to be a string"))
-                    .expect("Value must to be M, F or O")
-            }));
+        let patient_sex = TagAction::from(content.get(generate_key!("patient_sex")).map(|v| {
+            PatientSex::from_str(v.as_str().expect("Has to be a string"))
+                .expect("Value must to be M, F or O")
+        }));
         let remove_tags = match content.get(generate_key!("remove_tags")) {
             None => Vec::new(),
             Some(raw) => {

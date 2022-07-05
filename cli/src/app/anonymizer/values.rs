@@ -32,7 +32,8 @@ impl IMatcher<AnonymizerMeta> for AnonymizerValues {
         let input = PathBuf::from(matches.value_of("input").unwrap());
         let output = matches.value_of("output").map(PathBuf::from);
 
-        let mut patient_name = TagAction::from(matches.value_of("patient_name").map(str::to_string));
+        let mut patient_name =
+            TagAction::from(matches.value_of("patient_name").map(str::to_string));
         let mut patient_sex = match matches.value_of("patient_sex") {
             None => TagAction::Keep,
             Some(v) => TagAction::Change(PatientSex::from_str(v)?),
